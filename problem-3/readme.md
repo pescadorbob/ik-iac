@@ -142,42 +142,63 @@ from $CATALINA_HOME\bin
 ```shell
 curl http://localhost:8080
 ...
+```
+![Tomcat running](image-1.png)
 
+# Deploy from Maven
 
-StatusCode        : 200
-StatusDescription : 
-Content           : 
-                    
-                    
-                    <!DOCTYPE html>
-                    <html lang="en">
-                        <head>
-                            <meta charset="UTF-8" />
-                            <title>Apache Tomcat/10.1.25</title>
-                            <link href="favicon.ico" rel="icon" type="image/x-icon" />...
-RawContent        : HTTP/1.1 200 
-                    Transfer-Encoding: chunked
-                    Keep-Alive: timeout=20
-                    Connection: keep-alive
-                    Content-Type: text/html;charset=UTF-8
-                    Date: Fri, 28 Jun 2024 01:02:25 GMT
-                    
-                    
-                    
-                    
-                    <!DOCTYPE html>
-                    <html la...
-Forms             : {}
-Headers           : {[Transfer-Encoding, chunked], [Keep-Alive, timeout=20], [Connection, keep-alive], [Content-Type, text/html;charset=UTF-8]...}
-Images            : {@{innerHTML=; innerText=; outerHTML=<IMG id=tomcat-logo alt="[tomcat logo]" src="tomcat.svg">; outerText=; tagName=IMG; id=tomcat-logo; alt=[tomcat logo]; src=tomcat.svg}}
-InputFields       : {}
-Links             : {@{innerHTML=Home; innerText=Home; outerHTML=<A href="https://tomcat.apache.org/">Home</A>; outerText=Home; tagName=A; href=https://tomcat.apache.org/}, 
-                    @{innerHTML=Documentation; innerText=Documentation; outerHTML=<A href="/docs/">Documentation</A>; outerText=Documentation; tagName=A; href=/docs/}, 
-                    @{innerHTML=Configuration; innerText=Configuration; outerHTML=<A href="/docs/config/">Configuration</A>; outerText=Configuration; tagName=A; href=/docs/config/}, 
-                    @{innerHTML=Examples; innerText=Examples; outerHTML=<A href="/examples/">Examples</A>; outerText=Examples; tagName=A; href=/examples/}...}
-ParsedHtml        : mshtml.HTMLDocumentClass
-RawContentLength  : 11417
+1. Configure Tomcat as a server in Maven's settings.xml file.
 
+```xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <!-- Local repository path -->
+    <localRepository>${user.home}/.m2/repository</localRepository>
+
+    <!-- Other configurations can be added here -->
+    <server>
+        <id>TomcatServer</id>
+        <username>admin</username>
+        <password>password</password>
+    </server>
+</settings>
 
 ```
 
+1. Add the plugin to your pom.xml
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+            <url>http://localhost:8080/manager/text</url>
+            <username>admin</username>
+            <password>password</password>
+            <server>TomcatServer</server>
+            <path>/myapp</path>
+        </configuration>
+    </plugin>
+  </plugins>
+</build>
+```
+
+**Note:** Due to reasons I don't understand, maven wasn't picking up the 
+username and password set on the **TomcatServer** set in **~/.m2/settings.xml** so I set it in the pom, and then it worked according to [this SO article.](https://stackoverflow.com/questions/32230962/mvn-tomcat7deploy-cannot-invoke-tomcat-manager-broken-pipe)
+
+# Test it out
+
+```shell
+mvn tomcat7:deploy
+...
+[INFO] Deploying war to http://localhost:8080/  
+Uploading: http://localhost:8080/manager/text/deploy?path=%2F&update=true
+Uploaded: http://localhost:8080/manager/text/deploy?path=%2F&update=true (19800 KB at 29031.5 KB/sec)
+```
+
+![Hello World](image-2.png)
