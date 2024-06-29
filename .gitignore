@@ -23,3 +23,9 @@
 hs_err_pid*
 replay_pid*
 **/node_modules/**
+
+# intermediate pipeline build files
+**/pipeline/**/index.js
+**/pipeline/**/cdk.out
+**/pipeline/**/index.d.ts
+**/pipeline/**/ik-cfn.yaml
