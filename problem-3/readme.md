@@ -202,3 +202,70 @@ Uploaded: http://localhost:8080/manager/text/deploy?path=%2F&update=true (19800 
 ```
 
 ![Hello World](image-2.png)
+
+# Add the Elastic Beanstalk Deploy with CDK
+
+Copy the elastic beanstalk CDK environment files from the cdk examples
+**pipeline/elasticbeanstalk-environment**/cdk.json...
+
+update the cdk.json to a tomcat version 10
+
+```json
+        "platform": "arn:aws:elasticbeanstalk:us-west-2::platform/Tomcat 10 with Corretto 17 running on 64bit Amazon Linux 2023:5.1.8"
+```
+
+run `npm install`
+
+this is typscript, so run `npm run build`
+
+install cdk `npm install --global cdk`
+
+run `cdk synth`
+
+```yaml
+Resources:
+  Application:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      ApplicationName: MyApp
+    Metadata:
+      aws:cdk:path: ElasticBeanstalk/Application
+...
+                  - "3"
+                  - "4"
+                  - "5"
+                - Ref: BootstrapVersion
+        AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.
+```
+
+# Connect to the aws environment
+prepare cdk to connect to the environment with the **ecsadmin** user. e.g. `export AWS_DEFAULT_PROFILE=ecsadmin-8`
+
+gather or create your **aws_access_key_id** and **aws_secret_access_key** from your account and run `aws configure`
+
+set your region. Example: **~/.aws/config**
+```
+[default]
+region = us-west-2
+output = json
+```
+
+
+# bootstrap the environment
+`cdk bootstrap`
+If that looks OK, run `cdk deploy` to create the application and environment.
+
+While it's deploying, open the console and check it out!
+
+After a while, you may see success!
+
+```
+ ✅  ElasticBeanstalk
+
+✨  Deployment time: 293.9s
+
+Stack ARN:
+arn:aws:cloudformation:us-west-2:905418093247:stack/ElasticBeanstalk/ebd6ace0-35a7-11ef-a271-02082a16ab5f
+
+✨  Total time: 296.48s
+```
