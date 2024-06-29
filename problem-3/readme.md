@@ -271,7 +271,7 @@ arn:aws:cloudformation:us-west-2:905418093247:stack/ElasticBeanstalk/ebd6ace0-35
 ✨  Total time: 296.48s
 ```
 
-# Deploy the application
+# Manually deploy the application
 
 This is just the Application and the Environment. Now we need to upload and deploy the 'corvallis-happenings' application.
 
@@ -283,6 +283,56 @@ If you have bad luck like mine and nothing happens, check **Troubleshooting belo
 curl -X GET "http://test-env.eba-9tjmnwpj.us-west-2.elasticbeanstalk.com/hello"
 Hello World!
 ```
+
+# Add a bucket for staging as well
+
+Add a bucket for uploading and deploying the web application.
+
+```TypeScript
+    new s3.Bucket(this, `${appName}Bucket`,{
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      publicReadAccess: true,
+      blockPublicAccess: {
+        blockPublicPolicy: false,
+        blockPublicAcls: false,
+        ignorePublicAcls: false,
+        restrictPublicBuckets: false,
+      },
+    });
+```
+
+# Automate the deployment
+
+First, we will choose to install python to use boto. The CDK doesn't
+work well for uploading the war to the s3 bucket.
+
+## Prerequisites
+- Python 3 -- install from the microsoft store
+- boto3 -- run `pip install boto3`
+
+## Create the war deployment script.
+
+```python
+import boto3
+
+
+# Initialize the S3 client
+s3 = boto3.client('s3')
+
+# Create a new S3 bucket
+bucket_name = 'elasticbeanstalk-helloworldbucket04224f88-akmbpvnn1hxb'
+print(f"WAR file uploading to S3 bucket: {bucket_name}")
+
+# Upload your WAR file to the bucket
+war_file_path = '../../corvallis-happenings/target/corvallis-happenings-0.0.1-SNAPSHOT.war'
+s3.upload_file(war_file_path, bucket_name, 'hello-world.war')
+
+print(f"WAR file uploaded to S3 bucket: {bucket_name}")
+```
+
+Try it out. Did it upload to your bucket?
+
+![War uploaded!](image-7.png)
 
 
 # Troubleshooting
