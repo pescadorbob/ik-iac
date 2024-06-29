@@ -4,7 +4,7 @@ import boto3
 # Initialize the S3 client
 s3 = boto3.client('s3')
 
-# Create a new S3 bucket
+# select the S3 bucket
 bucket_name = 'elasticbeanstalk-helloworldbucket04224f88-akmbpvnn1hxb'
 print(f"WAR file uploading to S3 bucket: {bucket_name}")
 

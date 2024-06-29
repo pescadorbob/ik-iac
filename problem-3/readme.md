@@ -334,6 +334,63 @@ Try it out. Did it upload to your bucket?
 
 ![War uploaded!](image-7.png)
 
+Now deploy the war to the environment
+
+# Make the deployment script
+
+**deploy_to_eb.py**
+```python
+import boto3
+
+def deploy_to_eb(bucket_name, object_key, environment_name, application_name):
+    try:
+        # Initialize the Elastic Beanstalk client
+        eb_client = boto3.client('elasticbeanstalk')
+
+        # Create a new application version
+        response = eb_client.create_application_version(
+            ApplicationName=application_name,
+            VersionLabel='my-app-v1',  # Replace with your desired version label
+            SourceBundle={
+                'S3Bucket': bucket_name,
+                'S3Key': object_key
+            }
+        )
+
+        # Deploy the new version to the environment
+        eb_client.update_environment(
+            EnvironmentName=environment_name,
+            VersionLabel='my-app-v1'  # Same version label as above
+        )
+
+        print(f"New version deployed to {environment_name}")
+    except Exception as e:
+        print(f"Error deploying: {str(e)}")
+
+if __name__ == "__main__":
+    bucket_name = 'elasticbeanstalk-helloworldbucket04224f88-akmbpvnn1hxb'
+    object_key = 'hello-world.war'
+    environment_name = 'hello-worldEnvironment'
+    application_name = 'hello-world'
+
+    deploy_to_eb(bucket_name, object_key, environment_name, application_name)
+```
+
+**run it**
+
+```shell
+python deploy_to_eb.py
+New version deployed to hello-worldEnvironment
+```
+
+**Validate** in AWS
+![Date create](image-8.png)
+
+**Validate with curl**
+```shell
+curl -X GET http://hello-worldenvironment.eba-muraeydq.us-west-2.elasticbeanstalk.com/hello
+Hello World!
+```
 
 # Troubleshooting
 
