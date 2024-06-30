@@ -5,11 +5,25 @@ from ..deploy import info_parser as parser
 from ..deploy.deployment_validator import DeploymentValidator
 from ..deploy.info_gateway import InfoGateway
 from ..deploy.clock import Clock
+import pytest
 
-class TestDeploymentInfoValidator(unittest.TestCase):
-  def __init__(self, *args, **kwargs):
-    super().__init__(*args, **kwargs)
-    self.info_1 = '''
+def aTestClock(startTime:datetime):
+  class FakeClock(Clock):
+    def __init__(self, start_time:datetime):
+      self.start_time = start_time
+      self.current_time = start_time
+
+    def get_time(self):
+      return self.current_time        
+
+    def wait(self, time:timedelta):
+      self.current_time = self.current_time + time
+      pass
+
+  return FakeClock(startTime)
+
+class TestDeploymentInfoValidator():
+  info_1 = '''
 {
   "build": {
     "artifact": "corvallis-happenings",
@@ -20,7 +34,7 @@ class TestDeploymentInfoValidator(unittest.TestCase):
   }
 }
         '''
-    self.info_2 = '''
+  info_2 = '''
 {
   "build": {
     "artifact": "corvallis-happenings",
@@ -31,16 +45,16 @@ class TestDeploymentInfoValidator(unittest.TestCase):
   }
 }
         '''
-    self.current_time = datetime(2024,6,30,0,0,0) # 2024-6-30 00:00:00
-    self.test_clock = self.aTestClock(self.current_time) 
+  current_time = datetime(2024,6,30,0,0,0) # 2024-6-30 00:00:00
+  test_clock = aTestClock(current_time)
 
   def test_should_find_version_given_actuator_info(self):
                
     expected_time = '2024-06-30T04:04:31.441Z';
     
     time = parser.get_time(self.info_1);
-    self.assertEqual(time,expected_time);
-    self.assertEqual('foo'.upper(), 'FOO')
+    assert time == expected_time
+    
         
   def test_should_eventually_fail_deployment_given_a_deployment_info_gateway_that_never_succeeds(self):
     # Arrange
@@ -54,7 +68,7 @@ class TestDeploymentInfoValidator(unittest.TestCase):
     isDeployed = deployment_info_validator.validate(expected_time,time_limit,timedelta(minutes=1))
 
     # Assert
-    self.assertFalse(isDeployed)
+    assert not isDeployed    
 
   def test_should_eventually_validate_a_successful_deployment_after_30_seconds(self):
     # Arrange
@@ -71,22 +85,8 @@ class TestDeploymentInfoValidator(unittest.TestCase):
                                                     timedelta(seconds=5))
 
     # Assert
-    self.assertTrue(isDeployed)
+    assert isDeployed
 
-  def aTestClock(self, startTime:datetime):
-    class FakeClock(Clock):
-      def __init__(self, start_time:datetime):
-        self.start_time = start_time
-        self.current_time = start_time
-
-      def get_time(self):
-        return self.current_time        
-
-      def wait(self, time:timedelta):
-        self.current_time = self.current_time + time
-        pass
-
-    return FakeClock(startTime)
   
   def create_eventually_successful_gateway(self,clock,deployment_time):
     class FakeInfoGateway(InfoGateway):
