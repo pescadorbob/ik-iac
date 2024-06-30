@@ -1,9 +1,13 @@
+from multiprocessing import Process
 import pytest
 from flask import Flask, json
-from multiprocessing import Process
-from ..deploy.info_gateway import *
 
-class TestDeployedServiceGatewayIntegration():
+from ..deploy.environment import Environment
+from ..deploy.deployment_validator import DeploymentValidator
+from datetime import timedelta
+from ..deploy.deployment_validator_configuration import DeploymentValidatorConfiguration
+
+class TestComponent:
 
     def aDeployedService(self):
         
@@ -50,15 +54,11 @@ class TestDeployedServiceGatewayIntegration():
         server.terminate()
         server.join()
 
-    def test_should_get_deployment_info_metadata_given_a_listening_service(self,deployed_service):
-        """
-        Test case to verify the functionality of a deployed service gateway integration.
-        This tests only the integration layer and uses a wire mock to respond how we'd like.        
-        """
-        expectedResponse = DeploymentInfoResponse('2024-06-30T04:04:31.441Z')
-
-        gateway = DeployedServiceGateway('http://localhost:5000/actuator/info')
-        info: DeploymentInfoResponse = gateway.get_info()
-        assert info == expectedResponse
-
-        
+    def test_components(self, deployed_service):
+        environment = Environment("local","http://localhost:5000/actuator/info")
+        configuration = DeploymentValidatorConfiguration.from_environment(environment)
+        useCase = DeploymentValidator(configuration)
+        target_build_time_of_deployment = "2024-06-30T04:04:31.441Z"
+        time_limit = timedelta(minutes=1)
+        retry_interval = timedelta(seconds=5)
+        useCase.validate(target_build_time_of_deployment,time_limit,retry_interval)

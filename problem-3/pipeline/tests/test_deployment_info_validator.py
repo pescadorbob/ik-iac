@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from ..deploy.deployment_validator import DeploymentValidator
 from ..deploy.info_gateway import DeploymentInfoResponse, InfoGateway
 from ..deploy.clock import Clock
+from ..deploy.deployment_validator_configuration import DeploymentValidatorConfiguration
 
 import pytest
 
@@ -60,7 +61,8 @@ class TestDeploymentInfoValidator():
 
     simulated_deployment_time = timedelta(seconds=deployment_time_in_seconds) 
     info_gateway = self.create_eventually_successful_gateway(self.test_clock,simulated_deployment_time)
-    deployment_info_validator = DeploymentValidator(info_gateway,self.test_clock)
+    deployment_info_validator_configuration = DeploymentValidatorConfiguration(info_gateway,self.test_clock)
+    deployment_info_validator = DeploymentValidator(deployment_info_validator_configuration)
     expected_build_info_timestamp = '2024-06-31T04:04:31.441Z'
     deployment_time_limit = timedelta(seconds=deployment_time_limit_in_seconds)
 

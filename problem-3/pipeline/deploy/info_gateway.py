@@ -16,11 +16,12 @@ class InfoGateway(ABC):
         pass
 
 class DeployedServiceGateway(InfoGateway):
-    def __init__(self) -> None:
+    def __init__(self,url) -> None:
+        self.url = url
         pass
 
     def get_info(self) -> DeploymentInfoResponse:
         
-        currentlyDeployedInfo = requests.get('http://localhost:5000/actuator/info').json();
+        currentlyDeployedInfo = requests.get(self.url).json();
         build_time_metadata = currentlyDeployedInfo["build"]["time"]
         return DeploymentInfoResponse(build_time_metadata)

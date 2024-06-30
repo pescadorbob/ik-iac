@@ -1,15 +1,16 @@
-import json
-from . import info_parser as parser
 from datetime import timedelta
 from .clock import Clock
 from .info_gateway import InfoGateway
-
+from .environment import Environment
+from .info_gateway import DeployedServiceGateway
+from .clock import ProductionClock
+from .deployment_validator_configuration import DeploymentValidatorConfiguration
 class DeploymentValidator:
-    def __init__(self,deployment_info_gateway:InfoGateway,clock:Clock) -> None:
-        self.deployment_info_gateway = deployment_info_gateway
-        self.clock:Clock = clock
-        pass
-    
+    def __init__(self,configuration:DeploymentValidatorConfiguration):
+
+        self.deployment_info_gateway = configuration.deployment_info_gateway
+        self.clock:Clock = configuration.clock
+
     def validate(self, target_build_time_of_deployment: str, time_limit: timedelta, retry_interval: timedelta):
         """validate will continue to poll the deployment info gateway with retry_interval until the buildTime is successfully resolved, or the time limit runs out.
 
