@@ -138,3 +138,47 @@ A use case test that tests how the Deployment Validator works, with those fakes.
 
 ## Integration Tests
 We need some integration tests to validate the implementation of the Deployed Service.
+
+install flask `pip install flask`. This will allow us to have a little server acting like our deployed service.
+
+create a file `test_deployed_service_gateway_integration.py`
+
+create a file called `fake_deployed_service.py`
+
+copy the following to try out your mock server:
+```python
+from flask import Flask, json
+
+companies = [
+    {"id": 1, "name": "Company One"},
+    {"id": 2, "name": "Company Two"}
+]
+
+app = Flask(__name__)
+
+@app.route('/companies', methods=['GET'])
+def get_companies():
+    return json.dumps(companies)
+
+if __name__ == '__main__':
+    app.run()
+```
+
+run it from the terminal:
+```shell
+& C:/Users/bcfis/AppData/Local/Microsoft/WindowsApps/python3.12.exe c:/Users/bcfis/work/ik/cloud-iac/ik-iac/problem-3/pipeline/tests/fake_deployed_service.py
+ * Serving Flask app 'fake_deployed_service'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+```
+
+hit it with curl to try it out.
+
+```shell
+curl -X GET http://localhost:5000/companies 
+[{"id": 1, "name": "Company One"}, {"id": 2, "name": "Company Two"}]
+```
+
+try a test that starts it and stops it.
