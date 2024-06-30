@@ -60,22 +60,19 @@ class TestDeploymentInfoValidator():
   def test_eval(self, test_input, expected):
     assert eval(test_input) == expected
         
-  def test_should_eventually_fail_deployment_given_a_deployment_info_gateway_that_never_succeeds(self):
-    # Arrange
+ 
 
-    info_gateway = self.create_an_always_failing_gateway()
-    deployment_info_validator = DeploymentValidator(info_gateway,self.test_clock)
-    expected_build_info_timestamp = '2024-06-31T04:04:31.441Z'
-    time_limit = timedelta(minutes=1)
-
-    # Act
-    isDeployed = deployment_info_validator.validate(expected_build_info_timestamp,time_limit,timedelta(minutes=1))
-
-    # Assert
-    assert not isDeployed    
-
-  @pytest.mark.parametrize("deployment_time_in_seconds , deployment_time_limit_in_seconds, expected", [(30,60, True), ])
-  def test_should_eventually_validate_a_successful_deployment_after_30_seconds(self,deployment_time_in_seconds,deployment_time_limit_in_seconds,expected):
+  @pytest.mark.parametrize("deployment_time_in_seconds , deployment_time_limit_in_seconds, expected", 
+                           [(30,60, True), 
+                            (45,60, True), 
+                            (55,60, True), 
+                            (65,60, False), 
+                            (105,60, False), 
+                            ])
+  def test_should_validate_a_deployment_given_a_simulated_deployment_time_and_deployment_timeout(self,
+          deployment_time_in_seconds,
+          deployment_time_limit_in_seconds,
+          expected):
     # Arrange
 
     simulated_deployment_time = timedelta(seconds=deployment_time_in_seconds) 
@@ -121,24 +118,3 @@ class TestDeploymentInfoValidator():
           return self.successful_info
 
     return FakeInfoGateway(self.info_1,self.info_2, clock, deployment_time)
-  
-  def create_an_always_failing_gateway(self):
-    class FakeInfoGateway(InfoGateway):
-      def __init__(self,initial_info):
-        """creates an info gateway that returns initial_info forever
-           meaning the new version is never deployed...           
-
-        Args:
-            initial_info (str): the starting deployment info
-        """        
-        self.initial_info = initial_info
-        
-
-      def get_info(self):
-        return self.initial_info
-
-    return FakeInfoGateway( self.info_1)
-
-
-if __name__ == '__main__':
-    unittest.main()
