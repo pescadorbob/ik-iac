@@ -74,15 +74,15 @@ class TestDeploymentInfoValidator():
     # Assert
     assert not isDeployed    
 
-  @pytest.mark.parametrize("deployment_time_in_seconds ,expected", [(30, True), ])
-  def test_should_eventually_validate_a_successful_deployment_after_30_seconds(self,deployment_time_in_seconds,expected):
+  @pytest.mark.parametrize("deployment_time_in_seconds , deployment_time_limit_in_seconds, expected", [(30,60, True), ])
+  def test_should_eventually_validate_a_successful_deployment_after_30_seconds(self,deployment_time_in_seconds,deployment_time_limit_in_seconds,expected):
     # Arrange
 
     simulated_deployment_time = timedelta(seconds=deployment_time_in_seconds) 
     info_gateway = self.create_eventually_successful_gateway(self.test_clock,simulated_deployment_time)
     deployment_info_validator = DeploymentValidator(info_gateway,self.test_clock)
     expected_build_info_timestamp = '2024-06-31T04:04:31.441Z'
-    deployment_time_limit = timedelta(minutes=1)
+    deployment_time_limit = timedelta(seconds=deployment_time_limit_in_seconds)
 
     # Act
     isDeployed = deployment_info_validator.validate(expected_build_info_timestamp,
