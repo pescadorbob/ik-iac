@@ -1,6 +1,7 @@
 # Problem 3
 
 ## The Challenges
+
 - Select an application written in a language that is supported by an application runtime like Google App Engine Standard Environment or AWS Elastic Beanstalk.
   - Alternatively, create a simple application with a health endpoint.
 - If the service requires a database or other external connection, set up those resources using whichever tool you prefer.
@@ -9,6 +10,7 @@
 - Verify the deployment and that the application is running as expected.
 
 ## Deliverables
+
 - Create an application runtime spec file for the service you choose.
 - Create a document containing documentation for this process.
 - Include a step-by-step process for deploying future versions.
@@ -57,6 +59,7 @@ curl : The remote server returned an error: (404) Not Found.
 ```
 
 # Add a rest controller for hello world
+
 ```java
 @RestController
 public class HelloWorldController {
@@ -89,7 +92,7 @@ RawContent        : HTTP/1.1 200
 
                     Hello World!
 Forms             : {}
-Headers           : {[Keep-Alive, timeout=60], [Connection, keep-alive], [Content-Length,     
+Headers           : {[Keep-Alive, timeout=60], [Connection, keep-alive], [Content-Length,
                     12], [Content-Type, text/plain;charset=UTF-8]...}
 Images            : {}
 InputFields       : {}
@@ -101,6 +104,7 @@ RawContentLength  : 12
 Commit
 
 # Make a target for AWS ElasticBeanstalk
+
 Make the target for elastic beanstalk by creating a war and deploying to Tomcat locally.
 
 ## install tomcat
@@ -113,11 +117,9 @@ I like to add it temporarily to my visual studio code workspace:
 
 ![tomcat added](image.png)
 
-
 ### Configure Tomcat Users:
 
 Let’s make these changes in `$CATALINA_HOME\conf\tomcat-users:`
-
 
 ```xml
 <role rolename="manager-gui"/>
@@ -134,8 +136,9 @@ chmod 755 webapps
 ### test startup
 
 from $CATALINA_HOME\bin
+
 ```shell
-.\startup.bat 
+.\startup.bat
 ...
 27-Jun-2024 17:59:18.705 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in [1355] milliseconds
 ```
@@ -144,6 +147,7 @@ from $CATALINA_HOME\bin
 curl http://localhost:8080
 ...
 ```
+
 ![Tomcat running](image-1.png)
 
 # Deploy from Maven
@@ -189,7 +193,7 @@ curl http://localhost:8080
 </build>
 ```
 
-**Note:** Due to reasons I don't understand, maven wasn't picking up the 
+**Note:** Due to reasons I don't understand, maven wasn't picking up the
 username and password set on the **TomcatServer** set in **~/.m2/settings.xml** so I set it in the pom, and then it worked according to [this SO article.](https://stackoverflow.com/questions/32230962/mvn-tomcat7deploy-cannot-invoke-tomcat-manager-broken-pipe)
 
 # Test it out
@@ -197,7 +201,7 @@ username and password set on the **TomcatServer** set in **~/.m2/settings.xml** 
 ```shell
 mvn tomcat7:deploy
 ...
-[INFO] Deploying war to http://localhost:8080/  
+[INFO] Deploying war to http://localhost:8080/
 Uploading: http://localhost:8080/manager/text/deploy?path=%2F&update=true
 Uploaded: http://localhost:8080/manager/text/deploy?path=%2F&update=true (19800 KB at 29031.5 KB/sec)
 ```
@@ -240,19 +244,21 @@ Resources:
 ```
 
 # Connect to the aws environment
+
 prepare cdk to connect to the environment with the **ecsadmin** user. e.g. `export AWS_DEFAULT_PROFILE=ecsadmin-8`
 
 gather or create your **aws_access_key_id** and **aws_secret_access_key** from your account and run `aws configure`
 
 set your region. Example: **~/.aws/config**
+
 ```
 [default]
 region = us-west-2
 output = json
 ```
 
-
 # bootstrap the environment
+
 `cdk bootstrap`
 If that looks OK, run `cdk deploy` to create the application and environment.
 
@@ -307,6 +313,7 @@ First, we will choose to install python to use boto. The CDK doesn't
 work well for uploading the war to the s3 bucket.
 
 ## Prerequisites
+
 - Python 3 -- install from the microsoft store
 - boto3 -- run `pip install boto3`
 
@@ -339,6 +346,7 @@ Now deploy the war to the environment
 # Make the deployment script
 
 **deploy_to_eb.py**
+
 ```python
 import boto3
 
@@ -387,9 +395,14 @@ New version deployed to hello-worldEnvironment
 ![Date create](image-8.png)
 
 **Validate with curl**
+
 ```shell
 curl -X GET http://hello-worldenvironment.eba-muraeydq.us-west-2.elasticbeanstalk.com/hello
 Hello World!
 ```
 
+# Runtime Spec
 
+**Make it environmentally aware** You may have realized that so far, this war is very simplistic. It doesn't connect to anything, it isn't environmentally aware. Any application that does anything has a database. It probably has at least one lower environment to test integrations as well, before getting shipped off to prod. Our application is only prints hello world. How would you know if you ever actually deployed a new version correctly? If the new version had an updated bug fix, or domain model, how would you know the fix works to go to production. How would you check your deployment shipped successfully?
+
+So far, there is no way to tell if it shipped correctly. Check out the next installment, **ci.md** for the next level that uses the Elastic Beanstalk Runtime Spec **.ebextensions** to make the war environmentally aware and make it so that the deployment can detect and report a deployment failure.
