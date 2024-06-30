@@ -1,13 +1,16 @@
 import json
 from . import info_parser as parser
+from datetime import timedelta
+from .clock import Clock
+from .info_gateway import InfoGateway
 
 class DeploymentValidator:
-    def __init__(self,deployment_info_gateway,clock) -> None:
+    def __init__(self,deployment_info_gateway:InfoGateway,clock:Clock) -> None:
         self.deployment_info_gateway = deployment_info_gateway
-        self.clock = clock
+        self.clock:Clock = clock
         pass
     
-    def validate(self, buildTime: str, time_limit: int, retry_interval: int):
+    def validate(self, target_build_time_of_deployment: str, time_limit: timedelta, retry_interval: timedelta):
         """validate will continue to poll the deployment info gateway with retry_interval until the buildTime is successfully resolved, or the time limit runs out.
 
         Args:
@@ -19,9 +22,13 @@ class DeploymentValidator:
             Boolean: True if the buildTime was successfully resolved within the time limit, False otherwise.
         """
         isValidated = False
-        while not isValidated:
+        elapsed_time = timedelta(minutes=0);
+        start_time = self.clock.get_time()
+        while not isValidated and elapsed_time < time_limit:
             currentlyDeployedInfo = self.deployment_info_gateway.get_info()
-            time = parser.get_time(currentlyDeployedInfo)
-            isValidated = (time == buildTime)
+            build_time_of_deployment = parser.get_time(currentlyDeployedInfo)
+            isValidated = (build_time_of_deployment == target_build_time_of_deployment)
+            self.clock.wait(retry_interval)
+            elapsed_time = self.clock.get_time() - start_time
         return isValidated
         
