@@ -32,6 +32,7 @@ class TestDeploymentInfoValidator(unittest.TestCase):
 }
         '''
     self.current_time = datetime(2024,6,30,0,0,0) # 2024-6-30 00:00:00
+    self.test_clock = self.aTestClock(self.current_time) 
 
   def test_should_find_version_given_actuator_info(self):
                
@@ -44,9 +45,8 @@ class TestDeploymentInfoValidator(unittest.TestCase):
   def test_should_eventually_fail_deployment_given_a_deployment_info_gateway_that_never_succeeds(self):
     # Arrange
 
-    test_clock = self.aTestClock(self.current_time) 
     info_gateway = self.create_an_always_failing_gateway()
-    deployment_info_validator = DeploymentValidator(info_gateway,test_clock)
+    deployment_info_validator = DeploymentValidator(info_gateway,self.test_clock)
     expected_time = '2024-06-31T04:04:31.441Z'
     time_limit = timedelta(minutes=1)
 
@@ -58,11 +58,10 @@ class TestDeploymentInfoValidator(unittest.TestCase):
 
   def test_should_eventually_validate_a_successful_deployment_after_30_seconds(self):
     # Arrange
-    test_clock = self.aTestClock(self.current_time) 
 
     simulated_deployment_time = timedelta(seconds=30) 
-    info_gateway = self.create_eventually_successful_gateway(test_clock,simulated_deployment_time)
-    deployment_info_validator = DeploymentValidator(info_gateway,test_clock)
+    info_gateway = self.create_eventually_successful_gateway(self.test_clock,simulated_deployment_time)
+    deployment_info_validator = DeploymentValidator(info_gateway,self.test_clock)
     expected_build_info_timestamp = '2024-06-31T04:04:31.441Z'
     deployment_time_limit = timedelta(minutes=1)
 
