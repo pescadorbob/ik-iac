@@ -5,12 +5,13 @@ If it won't start, attempt to create the stack manually.
 ## Create the ElasticBeanstalk Role and Instance Profile
 
 Create an IAM role, similar to the one in the cdk index.ts file. E.g.
-* Name: AWSElasticBeanstalkWorkerTier
-* ServicePrincipal: 'ec2.amazonaws.com'
-* Permissions:
-  * AWSElasticBeanstalkWebTier
-  * AWSElasticBeanstalkMulticontainerDocker
-  * AWSElasticBeanstalkWorkerTier
+
+- Name: AWSElasticBeanstalkWorkerTier
+- ServicePrincipal: 'ec2.amazonaws.com'
+- Permissions:
+  - AWSElasticBeanstalkWebTier
+  - AWSElasticBeanstalkMulticontainerDocker
+  - AWSElasticBeanstalkWorkerTier
 
 **Notice the instance profile**
 ![Instance Profile](image-3.png)
@@ -20,6 +21,7 @@ Creating the role creates an instance profile with an ARN that can be used for c
 **ARN:** arn:aws:iam::905418093247:instance-profile/HelloWorldElasticBeanstalkControllerRole
 
 ## Configure service access
+
 to help troubleshoot, you'll need an EC2 key pair and an EC2 instance profile
 unrelated to any cdk generated instance profile to ensure you can manage
 their lifecycles separately. I.e. you don't want the dependency or else you won't be able to delete the stack without finding all the references first.
@@ -56,12 +58,13 @@ CorvallisHappeningsApplication.class  HelloWorldController.class  ServletInitial
 this verifies all the files arrived.
 
 ### Verify tomcat is listening with curl
+
 ```shell
 $ curl -X GET http://localhost:8080/hello
 <!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> The requested resource [&#47;hello] is not available</p><p><b>Description</b> The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.</p><hr class="line" /><h3>Apache Tomcat/10.1.24</h3></body></html>
 ```
-So, even though this has deployed to root, and all the classes are there. Tomcat still isn't serving this. Let's check the logs!
 
+So, even though this has deployed to root, and all the classes are there. Tomcat still isn't serving this. Let's check the logs!
 
 ### Check the logs
 
@@ -101,7 +104,7 @@ From the logs, it seems like it was started up successfully listening to port 80
 
 Locally this means I can hit the root directory **http://localhost:8080** and get a response.
 
-#### check the access logs then 
+#### check the access logs then
 
 ```shell
 [ec2-user@ip-172-31-47-1 logs]$ more localhost_access_log.txt
@@ -114,11 +117,12 @@ Locally this means I can hit the root directory **http://localhost:8080** and ge
 0:0:0:0:0:0:0:1 - - [29/Jun/2024:16:19:58 +0000] "GET /hello HTTP/1.1" 404 757
 ```
 
-all **404s** 
+all **404s**
 
 ### check the spring logs
 
 **Elastic Beanstalk Instance**
+
 ```shell
 $ more localhost.2024-06-29.log
 29-Jun-2024 15:56:59.704 INFO [main] org.apache.catalina.core.ApplicationContext.log 1 Spring WebApplicationInitializers detected on classpath
@@ -127,6 +131,7 @@ $ more localhost.2024-06-29.log
 This shows that spring isn't starting up in elastic beanstalk! Compare this log the a fresh deployment in the local tomcat.
 
 **Local Tomcat Instance**
+
 ```shell
 28-Jun-2024 14:16:14.196 INFO [Catalina-utility-1] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
 28-Jun-2024 14:16:17.572 INFO [Catalina-utility-1] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
