@@ -69,6 +69,10 @@ class TestDeploymentInfoValidator():
                            [(30,60,5, True), 
                             (45,60,5, True), 
                             (55,60,5, True), 
+                            (58,60,1, True), 
+                            (59,60,1, True), 
+                            (60,60,1, False), 
+                            (61,60,1, False), 
                             (65,60,5, False), 
                             (105,60,5, False), 
                             ])
