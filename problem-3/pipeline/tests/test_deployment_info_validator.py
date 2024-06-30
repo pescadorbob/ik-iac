@@ -42,11 +42,9 @@ class TestDeploymentInfoValidator(unittest.TestCase):
         
   def test_should_eventually_fail_deployment_given_a_deployment_info_gateway_that_never_succeeds(self):
     # Arrange
-    poll_interval = timedelta(seconds=5) # 5 seconds
     start_time = datetime(2024,6,30,7,43,0) # 2024-6-30 07:43:00
-    max_deployment_time = timedelta(minutes=1) 
 
-    test_clock = self.aTestClock(start_time,poll_interval) 
+    test_clock = self.aTestClock(start_time) 
     info_gateway = self.create_an_always_failing_gateway()
     deployment_info_validator = DeploymentValidator(info_gateway,test_clock)
     expected_time = '2024-06-31T04:04:31.441Z'
@@ -94,17 +92,19 @@ class TestDeploymentInfoValidator(unittest.TestCase):
   
   def create_eventually_successful_gateway(self,clock,deployment_time):
     class FakeInfoGateway(InfoGateway):
-      def __init__(self,test:TestDeploymentInfoValidator,clock:Clock,deployment_time:timedelta):
+      def __init__(self,initial_info,successful_info,clock:Clock,deployment_time:timedelta):
         """creates an info gateway that returns info_1 (the starting deployment info)
-           untile deployment_time has elapsed, then returns info_2 (the final deployment info)
+           until deployment_time has elapsed, then returns info_2 (the final deployment info)
 
         Args:
-            test (TestDeploymentInfoValidator): just the enclosing test with the info
+            initial_info (str): the starting deployment info
+            successful_info (str): the final deployment info
             clock (Clock): the fake clock for time travelling.
             deployment_time (int): time to elapse before this gateway returns info_2
         """
         
-        self.test = test
+        self.initial_info = initial_info
+        self.successful_info = successful_info
         self.clock:Clock = clock
         self.start_time:datetime = clock.get_time()
         self.deployment_time:timedelta = deployment_time
@@ -113,29 +113,28 @@ class TestDeploymentInfoValidator(unittest.TestCase):
       def get_info(self):
         elapsed_time:timedelta = self.clock.get_time() - self.start_time # time in seconds
         if elapsed_time < self.deployment_time:          
-          return self.test.info_1
+          return self.initial_info
         else:
-          return self.test.info_2
+          return self.successful_info
 
-    return FakeInfoGateway(self,clock, deployment_time)
+    return FakeInfoGateway(self.info_1,self.info_2, clock, deployment_time)
   
   def create_an_always_failing_gateway(self):
     class FakeInfoGateway(InfoGateway):
-      def __init__(self,test:TestDeploymentInfoValidator):
-        """creates an info gateway that returns info_1 (the starting deployment info) forever
+      def __init__(self,initial_info):
+        """creates an info gateway that returns initial_info forever
            meaning the new version is never deployed...           
 
         Args:
-            test (TestDeploymentInfoValidator): just the enclosing test with the info
-        """
-        
-        self.test = test
+            initial_info (str): the starting deployment info
+        """        
+        self.initial_info = initial_info
         
 
       def get_info(self):
-        return self.test.info_1
+        return self.initial_info
 
-    return FakeInfoGateway(self)
+    return FakeInfoGateway( self.info_1)
 
 
 if __name__ == '__main__':
