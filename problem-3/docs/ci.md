@@ -17,3 +17,38 @@ Add the [actuator as described here](https://docs.spring.io/spring-boot/referenc
 	</dependency>
 </dependencies>
 ```
+
+[Add the build info information as well as described here](https://howtodoinjava.com/spring-boot/info-endpoint-custom-info/)
+
+After redeploying, you could now see information that changes with every build:
+
+```shell
+curl -X GET http://localhost:8080/actuator/info | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   616    0   616    0     0   1330      0 --:--:-- --:--:-- --:--:--  1333
+{
+...
+  "build": {
+    "artifact": "corvallis-happenings",
+    "name": "corvallis-happenings",
+    "time": "2024-06-30T01:38:41.510Z",
+    "version": "0.0.1-SNAPSHOT",
+    "group": "edu.brent.ik.iac"
+  },
+}
+```
+
+# Check the deployed version automatically
+Well that's great that we can see the version of the latest build `"version":"0.0.1-SNAPSHOT"`. We can also see the timestamp `"2024-06-30T01:38:41.510Z"`.  This will be unique for every build and will therefore serve our purpose nicely. But we need our deployment to be able to tell though. 
+
+Let's write a python script that can hit the endpoint and tell us when deployment has completed and the new deployment has the right version and timestamp in the environment.
+
+From a Clean Architecture / TDD perspective. let's first write component that can parse the info and compare metadata.
+
+In pipeline, create a `tests` folder. Create a python test file called `test_deployment_info_validator.py`
+
+```python
+
+```
+
