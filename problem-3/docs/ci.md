@@ -87,4 +87,4 @@ def getTime(info: str):
 
 Make sure the tests pass.
 
-Next we'll pull that from an info gateway, and create a REST Info gateway implementation to pull it. then we'll get our use case class that iterates on the gateway until the deployment succeeds, it times out, or the retries run out.
+Next we'll pull that from an info gateway, and create a REST Info gateway implementation to pull it. then we'll get our use case class that iterates on the gateway until the deployment succeeds, it times out, or the retry time limit runs out.
