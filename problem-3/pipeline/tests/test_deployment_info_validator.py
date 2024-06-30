@@ -5,6 +5,8 @@ from ..deploy.deployment_validator import DeploymentValidator
 from ..deploy.info_gateway import InfoGateway
 from ..deploy.clock import Clock
 
+import pytest
+
 def aTestClock(startTime:datetime):
   class FakeClock(Clock):
     def __init__(self, start_time:datetime):
@@ -54,24 +56,29 @@ class TestDeploymentInfoValidator():
     assert time == expected_time
     
         
+  @pytest.mark.parametrize("test_input,expected", [("3+5", 8), ("2+4", 6), ("6*9", 54)])
+  def test_eval(self, test_input, expected):
+    assert eval(test_input) == expected
+        
   def test_should_eventually_fail_deployment_given_a_deployment_info_gateway_that_never_succeeds(self):
     # Arrange
 
     info_gateway = self.create_an_always_failing_gateway()
     deployment_info_validator = DeploymentValidator(info_gateway,self.test_clock)
-    expected_time = '2024-06-31T04:04:31.441Z'
+    expected_build_info_timestamp = '2024-06-31T04:04:31.441Z'
     time_limit = timedelta(minutes=1)
 
     # Act
-    isDeployed = deployment_info_validator.validate(expected_time,time_limit,timedelta(minutes=1))
+    isDeployed = deployment_info_validator.validate(expected_build_info_timestamp,time_limit,timedelta(minutes=1))
 
     # Assert
     assert not isDeployed    
 
-  def test_should_eventually_validate_a_successful_deployment_after_30_seconds(self):
+  @pytest.mark.parametrize("deployment_time_in_seconds ,expected", [(30, True), ])
+  def test_should_eventually_validate_a_successful_deployment_after_30_seconds(self,deployment_time_in_seconds,expected):
     # Arrange
 
-    simulated_deployment_time = timedelta(seconds=30) 
+    simulated_deployment_time = timedelta(seconds=deployment_time_in_seconds) 
     info_gateway = self.create_eventually_successful_gateway(self.test_clock,simulated_deployment_time)
     deployment_info_validator = DeploymentValidator(info_gateway,self.test_clock)
     expected_build_info_timestamp = '2024-06-31T04:04:31.441Z'
@@ -83,7 +90,7 @@ class TestDeploymentInfoValidator():
                                                     timedelta(seconds=5))
 
     # Assert
-    assert isDeployed
+    assert isDeployed == expected
 
   
   def create_eventually_successful_gateway(self,clock,deployment_time):
