@@ -62,16 +62,20 @@ class TestDeploymentInfoValidator():
         
  
 
-  @pytest.mark.parametrize("deployment_time_in_seconds , deployment_time_limit_in_seconds, expected", 
-                           [(30,60, True), 
-                            (45,60, True), 
-                            (55,60, True), 
-                            (65,60, False), 
-                            (105,60, False), 
+  @pytest.mark.parametrize('''deployment_time_in_seconds , 
+                           deployment_time_limit_in_seconds, 
+                           polling_interval_in_seconds,
+                           expected''', 
+                           [(30,60,5, True), 
+                            (45,60,5, True), 
+                            (55,60,5, True), 
+                            (65,60,5, False), 
+                            (105,60,5, False), 
                             ])
   def test_should_validate_a_deployment_given_a_simulated_deployment_time_and_deployment_timeout(self,
           deployment_time_in_seconds,
           deployment_time_limit_in_seconds,
+          polling_interval_in_seconds,                                     
           expected):
     # Arrange
 
@@ -84,7 +88,7 @@ class TestDeploymentInfoValidator():
     # Act
     isDeployed = deployment_info_validator.validate(expected_build_info_timestamp,
                                                     deployment_time_limit,
-                                                    timedelta(seconds=5))
+                                                    timedelta(seconds=polling_interval_in_seconds))
 
     # Assert
     assert isDeployed == expected
