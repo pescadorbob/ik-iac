@@ -29,3 +29,6 @@ replay_pid*
 **/pipeline/**/cdk.out
 **/pipeline/**/index.d.ts
 **/pipeline/**/ik-cfn.yaml
+
+# python intermediary files
+**/__pycache__
