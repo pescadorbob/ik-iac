@@ -1,11 +1,9 @@
 from datetime import datetime, timedelta
-import unittest
 
 from ..deploy import info_parser as parser
 from ..deploy.deployment_validator import DeploymentValidator
 from ..deploy.info_gateway import InfoGateway
 from ..deploy.clock import Clock
-import pytest
 
 def aTestClock(startTime:datetime):
   class FakeClock(Clock):
