@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 
-from ..deploy import info_parser as parser
 from ..deploy.deployment_validator import DeploymentValidator
-from ..deploy.info_gateway import InfoGateway
+from ..deploy.info_gateway import DeploymentInfoResponse, InfoGateway
 from ..deploy.clock import Clock
 
 import pytest
@@ -23,37 +22,13 @@ def aTestClock(startTime:datetime):
   return FakeClock(startTime)
 
 class TestDeploymentInfoValidator():
-  info_1 = '''
-{
-  "build": {
-    "artifact": "corvallis-happenings",
-    "name": "corvallis-happenings",
-    "time": "2024-06-30T04:04:31.441Z",
-    "version": "0.0.1-SNAPSHOT",
-    "group": "edu.brent.ik.iac"
-  }
-}
-        '''
-  info_2 = '''
-{
-  "build": {
-    "artifact": "corvallis-happenings",
-    "name": "corvallis-happenings",
-    "time": "2024-06-31T04:04:31.441Z",
-    "version": "0.0.2-SNAPSHOT",
-    "group": "edu.brent.ik.iac"
-  }
-}
-        '''
+  info_1 = DeploymentInfoResponse("2024-06-30T04:04:31.441Z")
+  info_2 = DeploymentInfoResponse("2024-06-31T04:04:31.441Z")
+
   current_time = datetime(2024,6,30,0,0,0) # 2024-6-30 00:00:00
   test_clock = aTestClock(current_time)
 
-  def test_should_find_version_given_actuator_info(self):
-               
-    expected_time = '2024-06-30T04:04:31.441Z';
-    
-    time = parser.get_time(self.info_1);
-    assert time == expected_time
+
     
         
   @pytest.mark.parametrize("test_input,expected", [("3+5", 8), ("2+4", 6), ("6*9", 54)])
