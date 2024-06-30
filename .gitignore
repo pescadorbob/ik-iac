@@ -32,3 +32,6 @@ replay_pid*
 
 # python intermediary files
 **/__pycache__
+
+# draw.io intermediary files for docs
+**/\.\$*drawio*

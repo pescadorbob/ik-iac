@@ -79,7 +79,6 @@ Then create a file called `deployment_info_validator.py` with this content:
 ```python
 import json
 
-
 def getTime(info: str):
     parsed_data = json.loads(info)
     return parsed_data["build"]["time"]
@@ -88,3 +87,54 @@ def getTime(info: str):
 Make sure the tests pass.
 
 Next we'll pull that from an info gateway, and create a REST Info gateway implementation to pull it. then we'll get our use case class that iterates on the gateway until the deployment succeeds, it times out, or the retry time limit runs out.
+
+# Use Cases
+
+It helps to sketch this out, and narrate the use case. In this case, the use case is part of a larger use case, that of deploying the new version of the application.
+
+## Use Case: Validate Deployment succeeded
+
+**Primary Actors:** Deployment Pipeline
+
+**Secondary Actors:** Deployed Service
+
+### Pre-requisites
+
+1. The pipeline has already finished commands to deploy and now it needs to verify it finished
+
+### Inputs:
+
+1. Environment
+   1. Name: (Dev, Production)
+   2. Service info metadata URL (The published service URL)
+   3. Target deployment build information metadata including:
+      1. application version
+      2. build date and time.
+
+### Normal Flow:
+
+1. Pipeline creates the build validator with an environment
+2. Pipeline initiates the use case with:
+   1. Polling interval
+   2. Maximum time it will wait for the service to upgrade
+3. The use case asks the service it's current build information metadata
+4. The service provides it's current build information metadata
+5. The use case compares the current build information with the target info in a loop, every polling interval until successful, or the timeout is reached.
+   Once the service responds it's updated, the use case responds to the pipeline that deployment completed successfully.
+
+### Alternative Flow:
+
+5A. If the timeout is reached, and the deployed service doesn't every return the updated build info metadata, the use case responds to the pipeline that the deployment failed. It is up to the pipeline to signal any operations facilities of the failure.
+
+### Exceptional Flows:
+3E. If the deployed service is unavailable, and ceases to respond to the use case, or responds with error codes, the use case will respond to the pipeline with the failure and the error code.
+
+## Architecture
+![Test architecture](image-9.png)
+Because we want to test the retry logic, without a connection to the deployed service, we create a deployed service gateway and a clock interface as well. For testing, these items can be shaped to do whatever we want, and abstract away the integration details.
+
+## Unit Tests
+A use case test that tests how the Deployment Validator works, with those fakes. It's a test that hits all the boundary cases we can think of and runs in about .3 seconds, runs reliably and deterministically because it's dependencies are owned by it.
+
+## Integration Tests
+We need some integration tests to validate the implementation of the Deployed Service.
