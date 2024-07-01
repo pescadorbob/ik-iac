@@ -4,23 +4,24 @@ from .deployment_validator_configuration import DeploymentValidatorConfiguration
 from .deployment_validator import DeploymentValidator
 from .environment import Environment
 from datetime import timedelta
-import subprocess
+from .command import Command
 
 class LocalDeployment:
 
-    def __init__(self) -> None:
-        pass
 
     def run_build(self):
         print("running build locally")
         isSuccessful = False
         target_directory = 'problem-3/corvallis-happenings'
         os.chdir(target_directory)
-        self.run_command('mvn clean package')
+        cmd = Command()
+        # result, last_line = cmd.execute('mvnw.cmd clean package')
+        # print(f"build result: {result} with line '{last_line}'")
+        
+        result, last_line = cmd.execute('mvnw.cmd tomcat7:deploy')
+        print(f"build result: {result} with line '{last_line}'")
 
-
-        # os.system('mvn clean package')
-        # os.system('mvn spring-boot:run')
+        
 
         cwd = os.getcwd()
         print(f"current working directory: {cwd}")

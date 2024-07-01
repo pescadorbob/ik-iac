@@ -1,6 +1,6 @@
 
 import pytest
-from ..deploy.comand import Command
+from ..deploy.command import Command
 
 class TestRunCommand:
 
@@ -9,6 +9,14 @@ class TestRunCommand:
         command = Command()
 
         result, last_line = command.execute('echo "Hello World"')
+        assert last_line.strip() == 'Hello World'
+        assert result == 0
+        
+    def test_should_run_a_command_in_the_background(self):
+        assert True
+        command = Command()
+
+        result, last_line = command.execute('echo "Hello World"',background=true)
         assert last_line.strip() == 'Hello World'
         assert result == 0
         

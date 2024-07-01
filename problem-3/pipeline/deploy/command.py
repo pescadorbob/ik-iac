@@ -4,6 +4,7 @@ import subprocess
 class Command:
 
     def execute(self, command):
+    # def execute(self, command,background:bool):
         print(f"running command: {command}")
         # Example command (replace with your desired command)
 
@@ -12,10 +13,6 @@ class Command:
 
         print(f"working directory: {working_dir}")
 
-        # result = subprocess.run(command, capture_output=True, text=True)
-        # output = result.stdout;
-        # print(output)
-        # return output
         # Start the process with the specified working directory
         process = subprocess.Popen(command, stdout=subprocess.PIPE, 
                                    stderr=subprocess.STDOUT, 
@@ -29,6 +26,11 @@ class Command:
 
         # Wait for the process to finish
         process.wait()
-
         return process.returncode, last_line
+        # if background is False:
+        #     process.wait()
+        #     return process.returncode, last_line
+        # else:
+        #     return 0, f"{command} is in the background"
+
 
