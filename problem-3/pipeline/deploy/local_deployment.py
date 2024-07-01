@@ -4,6 +4,7 @@ from .deployment_validator_configuration import DeploymentValidatorConfiguration
 from .deployment_validator import DeploymentValidator
 from .environment import Environment
 from datetime import timedelta
+import subprocess
 
 class LocalDeployment:
 
@@ -15,6 +16,9 @@ class LocalDeployment:
         isSuccessful = False
         target_directory = 'problem-3/corvallis-happenings'
         os.chdir(target_directory)
+        self.run_command('mvn clean package')
+
+
         # os.system('mvn clean package')
         # os.system('mvn spring-boot:run')
 
