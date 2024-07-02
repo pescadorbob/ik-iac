@@ -22,6 +22,7 @@ class TestEndToEnd():
         configuration = DeploymentValidatorConfiguration.from_environment(environment)
         self.use_case = DeploymentValidator(configuration)
 
+    @pytest.mark.skip(reason="This test isn't finished.")
     def test_deployment_successful(self,create_validator):
         target_build_info_time_of_deployment = self.live_deployment_info()
         time_limit = timedelta(minutes=1)

@@ -19,6 +19,19 @@ class LocalDeployment:
 
         return self.validate()
         
+
+    def build(self):
+        print(f"running build locally from {self.target_directory}.")
+        cmd = Command()
+        build_command = 'mvnw.cmd clean package'
+        result, last_line = cmd.execute_with_dir(self.target_directory,build_command)
+        print(f"build result: {result} with line '{last_line}'")
+
+    def deploy(self):
+        cmd = Command()
+        result, last_line = cmd.execute_with_dir(self.target_directory,'mvnw.cmd tomcat7:deploy')
+        print(f"build result: {result} with line '{last_line}'")
+                
     def validate(self):
         new_build_info = self.getBuildInfoMetadata()
 
@@ -32,20 +45,6 @@ class LocalDeployment:
                            
         print(f"Deployment validation {'successfull' if isSuccessful else 'failed'}")
         return isSuccessful
-
-    def build(self):
-        print(f"running build locally from {self.target_directory}.")
-        cmd = Command()
-        build_command = 'mvnw.cmd clean package'
-        result, last_line = cmd.execute_with_dir(self.target_directory,build_command)
-        print(f"build result: {result} with line '{last_line}'")
-
-    def deploy(self):
-        cmd = Command()
-        result, last_line = cmd.execute_with_dir(self.target_directory,'mvnw.cmd tomcat7:deploy')
-        print(f"build result: {result} with line '{last_line}'")
-        
-        
 
     def getBuildInfoMetadata(self):
         start_cwd = os.getcwd()
