@@ -43,14 +43,11 @@ class LocalDeployment:
 
     def build(self):
         print(f"running build locally from {self.target_directory}.")
-        cwd = os.getcwd()
-        os.chdir(self.target_directory)
         cmd = Command()
         build_command = 'mvnw.cmd clean package'
-        result, last_line = cmd.execute(build_command)
+        result, last_line = cmd.execute_with_dir(self.target_directory,build_command)
         print(f"build result: {result} with line '{last_line}'")
         
-        os.chdir(cwd)
         
 
     def getBuildInfoMetadata(self):
