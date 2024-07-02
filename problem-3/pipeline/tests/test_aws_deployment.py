@@ -6,11 +6,11 @@ class TestAwsDeployment:
 
     @pytest.mark.skip(reason="not implemented yet")    
     def test_aws_deployment(self):
-        project_root = ""
+        project_root = "."
         
         deployment = AwsDeployment(project_root)
 
-        isSuccessful = deployment.dev_pipeline()
+        isSuccessful = deployment.run_pipeline()
         assert isSuccessful == True
         assert True
         

@@ -7,20 +7,13 @@ from datetime import timedelta
 from .command import Command
 from .artifact_repository import ArtifactRepository
 from .deploy_to_eb import deploy_to_eb 
-
-class AwsDeployment:
+from abc import ABC, abstractmethod
+from .local_deployment import LocalDeployment
+class AwsDeployment(LocalDeployment):
 
     def __init__(self,root:str):
-        self.root = root
-
-    def getBuildInfoMetadata(self):
-        cwd = os.getcwd()
-        print(f"current working directory: {cwd}")
-        localBuildInfo = LocalMavenBuildInfo(f"{cwd}/target/classes/META-INF/build-info.properties")
-        new_build_info = localBuildInfo.get_build_info()
-        return new_build_info
-
-
+        super().__init__(root)
+        
     def dev_pipeline(self):
         target_directory = f"{self.root}/problem-3/corvallis-happenings"
         buildInfo = self.build(target_directory)
@@ -42,15 +35,4 @@ class AwsDeployment:
         print(f"Deployment validation {'successfull' if isSuccessful else 'failed'}")
 
         return isSuccessful
-
-    def build(self,target_directory):
-        print(f"running build locally from {target_directory}.")
-
-        print(f"Current Working dir {os.getcwd()}")
-        cmd = Command()
-        result, last_line = cmd.execute(f"{os.getcwd()}/{target_directory}",'mvnw.cmd clean package')
-        print(f"build result: {result} with line '{last_line}'")
-
-        buildInfo = self.getBuildInfoMetadata()
-        return buildInfo
 
