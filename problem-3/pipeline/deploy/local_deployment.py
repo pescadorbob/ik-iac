@@ -8,11 +8,13 @@ from .command import Command
 
 class LocalDeployment:
 
+    def __init__(self,root:str):
+        self.root = root
 
     def run_build(self):
-        print("running build locally")
         isSuccessful = False
-        target_directory = 'problem-3/corvallis-happenings'
+        target_directory = f"{self.root}/problem-3/corvallis-happenings"
+        print(f"running build locally from {target_directory}.")
         os.chdir(target_directory)
         cmd = Command()
         result, last_line = cmd.execute('mvnw.cmd clean package')
