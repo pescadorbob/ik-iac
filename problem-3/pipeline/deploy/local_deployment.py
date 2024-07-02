@@ -12,13 +12,13 @@ class LocalDeployment:
         self.root = root
 
     def run_pipeline(self):
-        isSuccessful = False
-        cmd = self.build()
+        self.build()
         
-        self.deploy(cmd)
+        self.deploy()
 
+        return self.validate()
         
-
+    def validate(self):
         new_build_info = self.getBuildInfoMetadata()
 
         local_env = Environment("local",service_url="http://localhost:8080/actuator/info")
@@ -28,12 +28,12 @@ class LocalDeployment:
         isSuccessful = validator.validate(target_build_time_of_deployment=new_build_info, 
                            time_limit=timedelta(minutes=1), 
                            retry_interval=timedelta(seconds=5))
-        
+                           
         print(f"Deployment validation {'successfull' if isSuccessful else 'failed'}")
-
         return isSuccessful
 
-    def deploy(self, cmd):
+    def deploy(self):
+        cmd = Command()
         result, last_line = cmd.execute('mvnw.cmd tomcat7:deploy')
         print(f"build result: {result} with line '{last_line}'")
 
