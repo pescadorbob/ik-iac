@@ -27,11 +27,6 @@ class Command:
         # Wait for the process to finish
         process.wait()
         return process.returncode, last_line
-        # if background is False:
-        #     process.wait()
-        #     return process.returncode, last_line
-        # else:
-        #     return 0, f"{command} is in the background"
 
     def execute_with_dir(self, dir, command):
 
@@ -68,11 +63,5 @@ class Command:
 
     def save_start_dir(self):
         self.cwd = os.getcwd()
-
-        # if background is False:
-        #     process.wait()
-        #     return process.returncode, last_line
-        # else:
-        #     return 0, f"{command} is in the background"
 
 

@@ -33,19 +33,16 @@ class LocalDeployment:
         print(f"Deployment validation {'successfull' if isSuccessful else 'failed'}")
         return isSuccessful
 
-    def deploy(self):
-        cwd = os.getcwd()
-        os.chdir(self.target_directory)
-        cmd = Command()
-        result, last_line = cmd.execute('mvnw.cmd tomcat7:deploy')
-        os.chdir(cwd)
-        print(f"build result: {result} with line '{last_line}'")
-
     def build(self):
         print(f"running build locally from {self.target_directory}.")
         cmd = Command()
         build_command = 'mvnw.cmd clean package'
         result, last_line = cmd.execute_with_dir(self.target_directory,build_command)
+        print(f"build result: {result} with line '{last_line}'")
+
+    def deploy(self):
+        cmd = Command()
+        result, last_line = cmd.execute_with_dir(self.target_directory,'mvnw.cmd tomcat7:deploy')
         print(f"build result: {result} with line '{last_line}'")
         
         
