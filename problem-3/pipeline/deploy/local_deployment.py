@@ -33,23 +33,35 @@ class LocalDeployment:
         return isSuccessful
 
     def deploy(self):
+        target_directory = f"{self.root}/problem-3/corvallis-happenings"
+        cwd = os.getcwd()
+        os.chdir(target_directory)
         cmd = Command()
         result, last_line = cmd.execute('mvnw.cmd tomcat7:deploy')
+        os.chdir(cwd)
         print(f"build result: {result} with line '{last_line}'")
 
     def build(self):
         target_directory = f"{self.root}/problem-3/corvallis-happenings"
         print(f"running build locally from {target_directory}.")
+        cwd = os.getcwd()
         os.chdir(target_directory)
         cmd = Command()
-        result, last_line = cmd.execute('mvnw.cmd clean package')
+        build_command = 'mvnw.cmd clean package'
+        result, last_line = cmd.execute(build_command)
         print(f"build result: {result} with line '{last_line}'")
-        return cmd
+        
+        os.chdir(cwd)
+        
 
     def getBuildInfoMetadata(self):
+        target_directory = f"{self.root}/problem-3/corvallis-happenings"
+        start_cwd = os.getcwd()
+        os.chdir(target_directory)
         cwd = os.getcwd()
         print(f"current working directory: {cwd}")
         localBuildInfo = LocalMavenBuildInfo(f"{cwd}/target/classes/META-INF/build-info.properties")
         new_build_info = localBuildInfo.get_build_info()
+        os.chdir(start_cwd) # revert back
         return new_build_info
 
