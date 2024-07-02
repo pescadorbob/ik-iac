@@ -10,7 +10,7 @@ class TestLocalDeployment:
         local_deployment = LocalDeployment(project_root)
 
         # Assert that the instance is of type LocalDeployment
-        isSuccessful = local_deployment.run_build()
+        isSuccessful = local_deployment.run_pipeline()
         assert isSuccessful == True
         
     

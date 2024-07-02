@@ -4,5 +4,5 @@ import os
 print(f"Current Directory {os.getcwd()}")
 
 deployment = LocalDeployment("../")
-isSuccessful = deployment.run_build()
+isSuccessful = deployment.run_pipeline()
 print(f"Deployment completed {isSuccessful}")

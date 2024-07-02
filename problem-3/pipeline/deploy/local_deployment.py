@@ -11,17 +11,11 @@ class LocalDeployment:
     def __init__(self,root:str):
         self.root = root
 
-    def run_build(self):
+    def run_pipeline(self):
         isSuccessful = False
-        target_directory = f"{self.root}/problem-3/corvallis-happenings"
-        print(f"running build locally from {target_directory}.")
-        os.chdir(target_directory)
-        cmd = Command()
-        result, last_line = cmd.execute('mvnw.cmd clean package')
-        print(f"build result: {result} with line '{last_line}'")
+        cmd = self.build()
         
-        result, last_line = cmd.execute('mvnw.cmd tomcat7:deploy')
-        print(f"build result: {result} with line '{last_line}'")
+        self.deploy(cmd)
 
         
 
@@ -38,6 +32,19 @@ class LocalDeployment:
         print(f"Deployment validation {'successfull' if isSuccessful else 'failed'}")
 
         return isSuccessful
+
+    def deploy(self, cmd):
+        result, last_line = cmd.execute('mvnw.cmd tomcat7:deploy')
+        print(f"build result: {result} with line '{last_line}'")
+
+    def build(self):
+        target_directory = f"{self.root}/problem-3/corvallis-happenings"
+        print(f"running build locally from {target_directory}.")
+        os.chdir(target_directory)
+        cmd = Command()
+        result, last_line = cmd.execute('mvnw.cmd clean package')
+        print(f"build result: {result} with line '{last_line}'")
+        return cmd
 
     def getBuildInfoMetadata(self):
         cwd = os.getcwd()

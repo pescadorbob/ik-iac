@@ -182,3 +182,8 @@ curl -X GET http://localhost:5000/companies
 ```
 
 try a test that starts it and stops it.
+
+
+july 1, 11:03 PM: having some trouble with current working directory to 
+build locally and push. seems the CWD in the process 
+has a difficult time with a directory created from the CWD, with extensions added on.
