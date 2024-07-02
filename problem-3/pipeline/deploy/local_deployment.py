@@ -15,8 +15,8 @@ class LocalDeployment:
         target_directory = 'problem-3/corvallis-happenings'
         os.chdir(target_directory)
         cmd = Command()
-        # result, last_line = cmd.execute('mvnw.cmd clean package')
-        # print(f"build result: {result} with line '{last_line}'")
+        result, last_line = cmd.execute('mvnw.cmd clean package')
+        print(f"build result: {result} with line '{last_line}'")
         
         result, last_line = cmd.execute('mvnw.cmd tomcat7:deploy')
         print(f"build result: {result} with line '{last_line}'")
