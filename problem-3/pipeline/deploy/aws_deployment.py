@@ -5,11 +5,20 @@ from .deployment_validator import DeploymentValidator
 from .environment import Environment
 from datetime import timedelta
 from .command import Command
+from .deploy_war_to_s3 import DeployWarToS3
 
 class LocalDeployment:
 
     def __init__(self,root:str):
         self.root = root
+
+    def getBuildInfoMetadata(self):
+        cwd = os.getcwd()
+        print(f"current working directory: {cwd}")
+        localBuildInfo = LocalMavenBuildInfo(f"{cwd}/target/classes/META-INF/build-info.properties")
+        new_build_info = localBuildInfo.get_build_info()
+        return new_build_info
+
 
     def run_build(self):
         isSuccessful = False
@@ -20,12 +29,18 @@ class LocalDeployment:
         result, last_line = cmd.execute('mvnw.cmd clean package')
         print(f"build result: {result} with line '{last_line}'")
         
-        result, last_line = cmd.execute('mvnw.cmd tomcat7:deploy')
-        print(f"build result: {result} with line '{last_line}'")
+
+        buildInfo = self.getBuildInfoMetadata()
+        
+        s3Deployer = DeployWarToS3()
+        s3Deployer.deploy()
 
         
 
-        new_build_info = self.getBuildInfoMetadata()
+        cwd = os.getcwd()
+        print(f"current working directory: {cwd}")
+        localBuildInfo = LocalMavenBuildInfo(f"{cwd}/target/classes/META-INF/build-info.properties")
+        new_build_info = localBuildInfo.get_build_info()
 
         local_env = Environment("local",service_url="http://localhost:8080/actuator/info")
         print("validating deployment")
@@ -38,11 +53,4 @@ class LocalDeployment:
         print(f"Deployment validation {'successfull' if isSuccessful else 'failed'}")
 
         return isSuccessful
-
-    def getBuildInfoMetadata(self):
-        cwd = os.getcwd()
-        print(f"current working directory: {cwd}")
-        localBuildInfo = LocalMavenBuildInfo(f"{cwd}/target/classes/META-INF/build-info.properties")
-        new_build_info = localBuildInfo.get_build_info()
-        return new_build_info
 

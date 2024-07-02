@@ -16,7 +16,7 @@ class TestRunCommand:
         assert True
         command = Command()
 
-        result, last_line = command.execute('echo "Hello World"',background=true)
+        result, last_line = command.execute('echo "Hello World"')
         assert last_line.strip() == 'Hello World'
         assert result == 0
         
