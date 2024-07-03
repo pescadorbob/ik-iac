@@ -24,6 +24,9 @@ class Deployment(ABC):
         
 
     def build(self):
+        """
+        mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version
+        """
         print(f"running build locally from {self.target_directory}.")
         cmd = Command()
         build_command = 'mvnw.cmd clean package'
