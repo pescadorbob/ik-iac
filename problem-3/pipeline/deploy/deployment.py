@@ -14,7 +14,7 @@ class Deployment(ABC):
         self.target_directory = f"{self.root}/problem-3/corvallis-happenings"
 
     def run_pipeline(self):
-        self.build()
+        # self.build()
         
         self.deploy()
 

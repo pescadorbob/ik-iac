@@ -18,7 +18,7 @@ class AwsDeployment(Deployment):
         artifactRepository = ArtifactRepository()
         folder = 'elasticbeanstalk-helloworldbucket04224f88-akmbpvnn1hxb'
         
-        artifactRepository.publish(folder,'corvallis-happenings.war',f"{target_directory}/target/corvallis-happenings-0.0.1-SNAPSHOT.war")
+        artifactRepository.publish(folder,'corvallis-happenings.war',f"{self.target_directory}/target/corvallis-happenings-0.0.1-SNAPSHOT.war")
 
         deploy_to_eb(folder,'corvallis-happenings.war','hello-worldEnvironment','hello-world')
 
