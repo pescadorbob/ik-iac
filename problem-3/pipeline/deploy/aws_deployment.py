@@ -8,11 +8,20 @@ from .command import Command
 from .artifact_repository import ArtifactRepository
 from .deploy_to_eb import deploy_to_eb 
 from abc import ABC, abstractmethod
-from .local_deployment import LocalDeployment
-class AwsDeployment(LocalDeployment):
+from .deployment import Deployment
+class AwsDeployment(Deployment):
 
     def __init__(self,root:str):
         super().__init__(root)
+
+    def deploy(self):
+        artifactRepository = ArtifactRepository()
+        folder = 'elasticbeanstalk-helloworldbucket04224f88-akmbpvnn1hxb'
+        
+        artifactRepository.publish(folder,'corvallis-happenings.war',f"{target_directory}/target/corvallis-happenings-0.0.1-SNAPSHOT.war")
+
+        deploy_to_eb(folder,'corvallis-happenings.war','hello-worldEnvironment','hello-world')
+
         
     def dev_pipeline(self):
         target_directory = f"{self.root}/problem-3/corvallis-happenings"

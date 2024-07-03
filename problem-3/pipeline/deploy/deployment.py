@@ -18,7 +18,9 @@ class Deployment(ABC):
         
         self.deploy()
 
-        return self.validate()
+        validation_url = "http://localhost:8080/actuator/info"
+        env = Environment("local", service_url=validation_url)
+        return self.validate(env)
         
 
     def build(self):
@@ -32,12 +34,11 @@ class Deployment(ABC):
     def deploy(self):
         pass
                 
-    def validate(self):
+    def validate(self,env):
         new_build_info = self.getBuildInfoMetadata()
 
-        local_env = Environment("local",service_url="http://localhost:8080/actuator/info")
         print("validating deployment")
-        config = DeploymentValidatorConfiguration.from_environment(local_env)
+        config = DeploymentValidatorConfiguration.from_environment(env)
         validator = DeploymentValidator(configuration=config)
         isSuccessful = validator.validate(target_build_time_of_deployment=new_build_info, 
                            time_limit=timedelta(minutes=1), 
