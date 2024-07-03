@@ -1,6 +1,6 @@
 import boto3
 
-def deploy_to_eb(bucket_name, object_key, environment_name, application_name):
+def deploy_to_eb(bucket_name, object_key, environment_name, application_name,version):
     try:
         # Initialize the Elastic Beanstalk client
         eb_client = boto3.client('elasticbeanstalk')
@@ -8,7 +8,7 @@ def deploy_to_eb(bucket_name, object_key, environment_name, application_name):
         # Create a new application version
         response = eb_client.create_application_version(
             ApplicationName=application_name,
-            VersionLabel='my-app-v1',  # Replace with your desired version label
+            VersionLabel=version,  # Replace with your desired version label
             SourceBundle={
                 'S3Bucket': bucket_name,
                 'S3Key': object_key
@@ -18,10 +18,10 @@ def deploy_to_eb(bucket_name, object_key, environment_name, application_name):
         # Deploy the new version to the environment
         eb_client.update_environment(
             EnvironmentName=environment_name,
-            VersionLabel='my-app-v1'  # Same version label as above
+            VersionLabel=version  # Same version label as above
         )
 
-        print(f"New version deployed to {environment_name}")
+        print(f"New version {version} deployed to {environment_name}")
     except Exception as e:
         print(f"Error deploying: {str(e)}")
 

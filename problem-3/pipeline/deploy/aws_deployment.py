@@ -9,18 +9,34 @@ from .artifact_repository import ArtifactRepository
 from .deploy_to_eb import deploy_to_eb 
 from abc import ABC, abstractmethod
 from .deployment import Deployment
+import os
+from .artifact_version import get_version
+
+def get_war_file_path(directory):
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".war"):
+                return file
+    return None
+
 class AwsDeployment(Deployment):
 
     def __init__(self,root:str):
         super().__init__(root)
 
+    
+
+
     def deploy(self):
         artifactRepository = ArtifactRepository()
         folder = 'elasticbeanstalk-helloworldbucket04224f88-akmbpvnn1hxb'
-        
-        artifactRepository.publish(folder,'corvallis-happenings.war',f"{self.target_directory}/target/corvallis-happenings-0.0.1-SNAPSHOT.war")
 
-        deploy_to_eb(folder,'corvallis-happenings.war','hello-worldEnvironment','hello-world')
+        war_file_path = get_war_file_path(f"{self.target_directory}/target")
+        version_number = get_version(war_file_path)
+        artifactRepository.publish(folder,'corvallis-happenings.war',
+                                   f"{self.target_directory}/target/{war_file_path}")
+
+        deploy_to_eb(folder,'corvallis-happenings.war','hello-worldEnvironment','hello-world',version_number)
 
         
     def dev_pipeline(self):
