@@ -38,7 +38,11 @@ class AwsDeployment(Deployment):
 
         deploy_to_eb(folder,'corvallis-happenings.war','hello-worldEnvironment','hello-world',version_number)
 
-        
+    def get_environment(self):        
+        validation_url = "http://hello-worldenvironment.eba-muraeydq.us-west-2.elasticbeanstalk.com/actuator/info"
+        env = Environment("aws", service_url=validation_url)
+        return env
+    
     def dev_pipeline(self):
         target_directory = f"{self.root}/problem-3/corvallis-happenings"
         buildInfo = self.build(target_directory)
@@ -48,13 +52,13 @@ class AwsDeployment(Deployment):
         artifactRepository.publish(folder,'corvallis-happenings.war',f"{target_directory}/target/corvallis-happenings-0.0.1-SNAPSHOT.war")
 
         deploy_to_eb(folder,'corvallis-happenings.war','hello-worldEnvironment','hello-world')
-
+        # http://hello-worldenvironment.eba-muraeydq.us-west-2.elasticbeanstalk.com/actuator/info
         aws_env = Environment("aws",service_url="http://hello-worldenvironment.eba-muraeydq.us-west-2.elasticbeanstalk.com/actuator/info")
         print("validating deployment")
         config = DeploymentValidatorConfiguration.from_environment(aws_env)
         validator = DeploymentValidator(configuration=config)
         isSuccessful = validator.validate(target_build_time_of_deployment=new_build_info, 
-                           time_limit=timedelta(minutes=1), 
+                           time_limit=timedelta(minutes=3), 
                            retry_interval=timedelta(seconds=5))
         
         print(f"Deployment validation {'successfull' if isSuccessful else 'failed'}")

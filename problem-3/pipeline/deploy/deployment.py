@@ -14,13 +14,16 @@ class Deployment(ABC):
         self.target_directory = f"{self.root}/problem-3/corvallis-happenings"
 
     def run_pipeline(self):
-        # self.build()
+        self.build()
         
         self.deploy()
 
-        validation_url = "http://localhost:8080/actuator/info"
-        env = Environment("local", service_url=validation_url)
+        env = self.get_environment()
         return self.validate(env)
+
+    @abstractmethod
+    def get_environment(self):
+        pass
         
 
     def build(self):

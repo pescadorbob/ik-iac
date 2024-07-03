@@ -16,3 +16,9 @@ class LocalDeployment(Deployment):
         cmd = Command()
         result, last_line = cmd.execute_with_dir(self.target_directory,'mvnw.cmd tomcat7:deploy')
         print(f"build result: {result} with line '{last_line}'")            
+    
+    def get_environment(self):        
+        validation_url = "http://localhost:8080/actuator/info"
+        env = Environment("personal", service_url=validation_url)
+        return env
+    
