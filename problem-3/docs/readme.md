@@ -1,27 +1,11 @@
-# Problem 3
 
-## The Challenges
+# Application Details
 
-- Select an application written in a language that is supported by an application runtime like Google App Engine Standard Environment or AWS Elastic Beanstalk.
-  - Alternatively, create a simple application with a health endpoint.
-- If the service requires a database or other external connection, set up those resources using whichever tool you prefer.
-- Create a spec file for the application runtime.
-- Using the cloud provider’s console or CLI, deploy the application using your spec file.
-- Verify the deployment and that the application is running as expected.
-
-## Deliverables
-
-- Create an application runtime spec file for the service you choose.
-- Create a document containing documentation for this process.
-- Include a step-by-step process for deploying future versions.
-- Include a section explaining how to verify the service is running as expected.
-- If you run into issues, add an FAQ section to help avoid them in the future.
-
-# Solution
-
-I'll start with a simple spring boot app that just says Hello World to make this really easy. I used the spring initializer.
+This read me details. how the application is built and how it is structured and how to deploy the application to a local Tomcat and to deploy the application to elastic beanstalk. Full details for continuous integration can be found [here](ci.md).
 
 # Initialization
+
+I'll start with a simple spring boot app that just says Hello World to make this really easy. I used the spring initializer.
 
 This starts with just a basic spring boot app, without a rest controller or anything:
 
@@ -210,7 +194,7 @@ Uploaded: http://localhost:8080/manager/text/deploy?path=%2F&update=true (19800 
 
 # Add the Elastic Beanstalk Deploy with CDK
 
-Copy the elastic beanstalk CDK environment files from the cdk examples
+Copy the elastic beanstalk CDK environment files from the [cdk examples](https://github.com/aws-samples/aws-cdk-examples/tree/main/typescript/elasticbeanstalk/elasticbeanstalk-environment)
 **pipeline/elasticbeanstalk-environment**/cdk.json...
 
 update the cdk.json to a tomcat version 10
@@ -277,11 +261,13 @@ arn:aws:cloudformation:us-west-2:905418093247:stack/ElasticBeanstalk/ebd6ace0-35
 ✨  Total time: 296.48s
 ```
 
+Take note of the deployed public url in your stack. E.g. test-env.eba-9tjmnwpj.us-west-2.elasticbeanstalk.com
+
 # Manually deploy the application
 
 This is just the Application and the Environment. Now we need to upload and deploy the 'corvallis-happenings' application.
 
-To test our war first, manually select the deployed environment and select 'Upload and deploy', and git it your war.
+To test our war first, manually select the deployed environment and select 'Upload and deploy', and give it your war.
 
 If you have bad luck like mine and nothing happens, check **Troubleshooting below**. If however, you did better and used all the same versions of java for building and running your application, you'll see success like below here:
 
@@ -290,9 +276,9 @@ curl -X GET "http://test-env.eba-9tjmnwpj.us-west-2.elasticbeanstalk.com/hello"
 Hello World!
 ```
 
-# Add a bucket for staging as well
+# Add a bucket for staging for deployment through the cdk
 
-Add a bucket for uploading and deploying the web application.
+Add a bucket to `index.ts` for uploading and deploying the web application. 
 
 ```TypeScript
     new s3.Bucket(this, `${appName}Bucket`,{
@@ -319,9 +305,10 @@ work well for uploading the war to the s3 bucket.
 
 ## Create the war deployment script.
 
+this is the first version of the script that will hard code all the values for the environment and artifact versions. Eventually we will parameterize the script so that it can be run for different environments and different version of the application.
+
 ```python
 import boto3
-
 
 # Initialize the S3 client
 s3 = boto3.client('s3')
@@ -341,9 +328,9 @@ Try it out. Did it upload to your bucket?
 
 ![War uploaded!](images/image-7.png)
 
-Now deploy the war to the environment
+# Deploy the war to the environment
 
-# Make the deployment script
+Make the deployment script
 
 **deploy_to_eb.py**
 
@@ -400,4 +387,6 @@ New version deployed to hello-worldEnvironment
 curl -X GET http://hello-worldenvironment.eba-muraeydq.us-west-2.elasticbeanstalk.com/hello
 Hello World!
 ```
+
+Next steps are to created a Continuous Integration pipeline. See [here](ci.md) for this.
 
