@@ -115,7 +115,7 @@ I installed mine here: `~\work\software\apache-tomcat-10.1.25`
 
 I like to add it temporarily to my visual studio code workspace:
 
-![tomcat added](image.png)
+![tomcat added](images/image.png)
 
 ### Configure Tomcat Users:
 
@@ -148,7 +148,7 @@ curl http://localhost:8080
 ...
 ```
 
-![Tomcat running](image-1.png)
+![Tomcat running](images/image-1.png)
 
 # Deploy from Maven
 
@@ -206,7 +206,7 @@ Uploading: http://localhost:8080/manager/text/deploy?path=%2F&update=true
 Uploaded: http://localhost:8080/manager/text/deploy?path=%2F&update=true (19800 KB at 29031.5 KB/sec)
 ```
 
-![Hello World](image-2.png)
+![Hello World](images/image-2.png)
 
 # Add the Elastic Beanstalk Deploy with CDK
 
@@ -339,7 +339,7 @@ print(f"WAR file uploaded to S3 bucket: {bucket_name}")
 
 Try it out. Did it upload to your bucket?
 
-![War uploaded!](image-7.png)
+![War uploaded!](images/image-7.png)
 
 Now deploy the war to the environment
 
@@ -392,7 +392,7 @@ New version deployed to hello-worldEnvironment
 ```
 
 **Validate** in AWS
-![Date create](image-8.png)
+![Date create](images/image-8.png)
 
 **Validate with curl**
 

@@ -14,7 +14,7 @@ Create an IAM role, similar to the one in the cdk index.ts file. E.g.
   - AWSElasticBeanstalkWorkerTier
 
 **Notice the instance profile**
-![Instance Profile](image-3.png)
+![Instance Profile](images/image-3.png)
 
 Creating the role creates an instance profile with an ARN that can be used for creating the ElasticBeanstalk environment.
 
@@ -25,12 +25,12 @@ Creating the role creates an instance profile with an ARN that can be used for c
 to help troubleshoot, you'll need an EC2 key pair and an EC2 instance profile
 unrelated to any cdk generated instance profile to ensure you can manage
 their lifecycles separately. I.e. you don't want the dependency or else you won't be able to delete the stack without finding all the references first.
-![Service Access](image-4.png)
+![Service Access](images/image-4.png)
 
 After you start up your service and check you still can't connect, connect through the ssh.
 
-![ec2-login](image-5.png)
-![Success!](image-6.png)
+![ec2-login](images/image-5.png)
+![Success!](images/image-6.png)
 
 ### Find the tomcat instance
 

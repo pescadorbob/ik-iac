@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-06-30T19:06:02.024Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.1 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="ffU79qLuyw7XCwexPVSt" version="24.6.1" type="device">
+<mxfile host="Electron" modified="2024-07-06T15:29:01.779Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.1 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="EPDyfD39O8FrYN5pfVNv" version="24.6.1" type="device">
   <diagram name="Page-1" id="aWAEByxrpECOk5h2nZqE">
-    <mxGraphModel dx="896" dy="837" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1674" dy="837" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -13,7 +13,7 @@
         <mxCell id="ZicIsWQhjcaUXEMWt56j-13" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#00CC00;" edge="1" parent="1" source="ZicIsWQhjcaUXEMWt56j-2" target="ZicIsWQhjcaUXEMWt56j-12">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ZicIsWQhjcaUXEMWt56j-2" value="Info Gateway" style="rounded=1;whiteSpace=wrap;html=1;rotation=75;" vertex="1" parent="1">
+        <mxCell id="ZicIsWQhjcaUXEMWt56j-2" value="Deployed Service Gateway" style="rounded=1;whiteSpace=wrap;html=1;rotation=75;" vertex="1" parent="1">
           <mxGeometry x="410" y="250" width="70" height="50" as="geometry" />
         </mxCell>
         <mxCell id="ZicIsWQhjcaUXEMWt56j-3" value="Deployed Service" style="rounded=1;whiteSpace=wrap;html=1;rotation=0;" vertex="1" parent="1">

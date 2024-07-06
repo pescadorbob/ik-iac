@@ -130,7 +130,7 @@ It helps to sketch this out, and narrate the use case. In this case, the use cas
 3E. If the deployed service is unavailable, and ceases to respond to the use case, or responds with error codes, the use case will respond to the pipeline with the failure and the error code.
 
 ## Architecture
-![Test architecture](image-9.png)
+![Test architecture](images/image-9.png)
 Because we want to test the retry logic, without a connection to the deployed service, we create a deployed service gateway and a clock interface as well. For testing, these items can be shaped to do whatever we want, and abstract away the integration details.
 
 ## Unit Tests
