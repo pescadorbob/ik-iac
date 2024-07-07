@@ -20,7 +20,7 @@ class TestArtifactRepository:
         Fixture to set up any necessary dependencies or configurations before running the tests.
         """
         config = DevConfig()
-        repository = ArtifactRepository(config.artifactory_bucket)
+        repository = config.get_artifact_repository()
         key = self.key()
         image_file_loc = self.image_file_loc()
         repository.publish( key, image_file_loc)

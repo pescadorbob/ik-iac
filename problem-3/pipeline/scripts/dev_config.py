@@ -6,3 +6,7 @@ class DevConfig:
         self.artifactory_bucket = "dev-hello-world-war-bucke-devhelloworldbucket2aaee-wwaurlhxofux"
         self.validation_url = "http://dev-hello-world-environment.eba-ce824fjy.us-west-2.elasticbeanstalk.com/actuator/info"
     
+    def get_artifact_repository(self) -> ArtifactRepository:
+        return ArtifactRepository(self.artifactory_bucket)
+    
+    
