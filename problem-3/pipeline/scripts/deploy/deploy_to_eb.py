@@ -26,7 +26,7 @@ def deploy_to_eb(bucket_name, object_key, environment_name, application_name,ver
         print(f"Error deploying: {str(e)}")
 
 if __name__ == "__main__":
-    bucket_name = 'elasticbeanstalk-helloworldbucket04224f88-akmbpvnn1hxb'
+    bucket_name = 'dev-hello-world-war-bucke-devhelloworldbucket2aaee-wwaurlhxofux'
     object_key = 'hello-world.war'
     environment_name = 'hello-worldEnvironment'
     application_name = 'hello-world'

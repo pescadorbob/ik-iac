@@ -23,6 +23,10 @@ export class WarBucket extends cdk.Stack {
       },
     });
     this.warBucket = bucket;
+    new cdk.CfnOutput(this, 'artifactBucketArn', {
+      value: bucket.bucketName,
+    });
+
   }
 }
 

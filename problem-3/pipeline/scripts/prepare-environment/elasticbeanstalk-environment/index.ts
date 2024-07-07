@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
 import * as elasticbeanstalk from 'aws-cdk-lib/aws-elasticbeanstalk';
-
 import { CfnInstanceProfile, ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-
+import { WarBucket } from './war-bucket';
 
 export class CdkStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const appName = 'hello-world';
+    //objects for access parameters
+    const node = this.node;
+    let environmentName = node.tryGetContext("environment") 
+    const appName = node.tryGetContext(environmentName)["appName"];
     
-    const ebRole = new Role(this, `${appName}ElasticBeanstalkRole`, {
+    const ebRole = new Role(this, `${appName}-ElasticBeanstalkRole`, {
       assumedBy: new ServicePrincipal('ec2.amazonaws.com'),
     });
 
@@ -20,13 +21,10 @@ export class CdkStack extends cdk.Stack {
     ebRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AWSElasticBeanstalkMulticontainerDocker'));
     ebRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AWSElasticBeanstalkWorkerTier'));
 
-    const instanceProfile = new CfnInstanceProfile(this, `${appName}InstanceProfile`, {
-      instanceProfileName: `${appName}InstanceProfile`,
+    const instanceProfile = new CfnInstanceProfile(this, `${appName}-instanceProfile`, {
+      instanceProfileName: `${appName}-instanceProfile`,
       roles: [ebRole.roleName],
-  });
-
-    //objects for access parameters
-    const node = this.node;
+    });
 
     const platform = node.tryGetContext("platform");
 
@@ -35,7 +33,7 @@ export class CdkStack extends cdk.Stack {
     });
 
     const env = new elasticbeanstalk.CfnEnvironment(this, 'Environment', {
-      environmentName: `${appName}Environment`,
+      environmentName: `${appName}-environment`,
       applicationName: app.applicationName || appName,
       platformArn: platform,      
       optionSettings: [
@@ -47,15 +45,8 @@ export class CdkStack extends cdk.Stack {
             ],
     });
 
-    new s3.Bucket(this, `${appName}Bucket`,{
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      publicReadAccess: true,
-      blockPublicAccess: {
-        blockPublicPolicy: false,
-        blockPublicAcls: false,
-        ignorePublicAcls: false,
-        restrictPublicBuckets: false,
-      },
+    new cdk.CfnOutput(this, 'environmentUrl', {
+      value: env.attrEndpointUrl.toString(),
     });
 
     // to ensure the instance profile is created before the environment.
@@ -66,7 +57,12 @@ export class CdkStack extends cdk.Stack {
 }
 
 const app = new cdk.App();
-
-new CdkStack(app, 'ElasticBeanstalk');
+const envName = app.node.tryGetContext("environment");
+console.log(`Env Name:${envName}`);
+const env = app.node.tryGetContext(envName);
+console.log(env);
+const appName = app.node.tryGetContext(envName)['appName']
+new CdkStack(app, appName);
+new WarBucket(app, `${appName}-war-bucket`, appName);
 
 app.synth();

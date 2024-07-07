@@ -1,7 +1,7 @@
 
 import pytest
-from ..deploy.local_deployment import LocalDeployment
-from ..deploy.aws_deployment import AwsDeployment
+from ..scripts.deploy.local_deployment import LocalDeployment
+from ..scripts.deploy.aws_deployment import AwsDeployment
 from abc import ABC, abstractmethod
 class TestDeployment(ABC):
 

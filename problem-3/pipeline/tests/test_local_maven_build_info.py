@@ -1,5 +1,5 @@
 
-from ..deploy.build_info import LocalMavenBuildInfo
+from ..scripts.deploy.build_info import LocalMavenBuildInfo
 
 class TestLocalBuildInfo:
 

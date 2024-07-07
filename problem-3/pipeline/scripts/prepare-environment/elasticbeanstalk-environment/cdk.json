@@ -1,0 +1,15 @@
+{
+    "context": {
+        "dev":{
+            "stackName":"dev-hello-world-eb",
+            "appName": "dev-hello-world"
+        }, 
+        "prod":{
+            "stackName":"prod-hello-world-eb",
+            "appName": "prod-hello-world"
+        }, 
+
+        "platform": "arn:aws:elasticbeanstalk:us-west-2::platform/Tomcat 10 with Corretto 17 running on 64bit Amazon Linux 2023"        
+    },
+    "app": "node index"
+}

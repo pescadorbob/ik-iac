@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 
-from ..deploy.deployment_validator import DeploymentValidator
-from ..deploy.info_gateway import DeploymentInfoResponse, InfoGateway
-from ..deploy.clock import Clock
-from ..deploy.deployment_validator_configuration import DeploymentValidatorConfiguration
+from ..scripts.deploy.deployment_validator import DeploymentValidator
+from ..scripts.deploy.info_gateway import DeploymentInfoResponse, InfoGateway
+from ..scripts.deploy.clock import Clock
+from ..scripts.deploy.deployment_validator_configuration import DeploymentValidatorConfiguration
 
 import pytest
 

@@ -1,4 +1,4 @@
-from ..deploy.artifact_version import get_version
+from ..scripts.deploy.artifact_version import get_version
 import pytest
 
 class TestArtifactVersion:

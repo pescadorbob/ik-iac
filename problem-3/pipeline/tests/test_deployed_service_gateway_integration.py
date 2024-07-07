@@ -1,7 +1,7 @@
 import pytest
 from flask import Flask, json
 from multiprocessing import Process
-from ..deploy.info_gateway import *
+from ..scripts.deploy.info_gateway import *
 
 class TestDeployedServiceGatewayIntegration():
 

@@ -2,10 +2,12 @@ import boto3
 import botocore
 class ArtifactRepository:
 
+    def __init__(self,bucket_name):
+        self.bucket_name = bucket_name
 
-    def exists(self, bucket_name, key):
+    def exists(self,  key):
         s3 = boto3.resource('s3')        
-
+        bucket_name = self.bucket_name
         try:
             s3.Object(bucket_name, key).load()
             print(f"File '{key}' exists in bucket '{bucket_name}'.")
@@ -18,7 +20,8 @@ class ArtifactRepository:
                 print(f"An error occurred: {e}")
                 raise e
     
-    def delete(self, bucket_name, key):
+    def delete(self,  key):
+        bucket_name = self.bucket_name
         s3 = boto3.client('s3')
 
         # select the S3 bucket
@@ -31,7 +34,8 @@ class ArtifactRepository:
 
         return True
     
-    def publish(self, bucket_name, key, file_location):
+    def publish(self,  key, file_location):
+        bucket_name = self.bucket_name
         s3 = boto3.client('s3')
 
         # select the S3 bucket

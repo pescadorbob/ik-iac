@@ -2,10 +2,10 @@ from multiprocessing import Process
 import pytest
 from flask import Flask, json
 
-from ..deploy.environment import Environment
-from ..deploy.deployment_validator import DeploymentValidator
+from ..scripts.deploy.environment import Environment
+from ..scripts.deploy.deployment_validator import DeploymentValidator
 from datetime import timedelta
-from ..deploy.deployment_validator_configuration import DeploymentValidatorConfiguration
+from ..scripts.deploy.deployment_validator_configuration import DeploymentValidatorConfiguration
 
 class TestComponent:
 

@@ -24,13 +24,10 @@ class AwsDeployment(Deployment):
     def __init__(self,root:str):
         super().__init__(root)
 
-    
-
-
     def deploy(self):
         artifactRepository = ArtifactRepository()
-        folder = 'elasticbeanstalk-helloworldbucket04224f88-akmbpvnn1hxb'
-
+        folder = 'dev-hello-world-war-bucke-devhelloworldbucket2aaee-wwaurlhxofux'
+        
         war_file_path = get_war_file_path(f"{self.target_directory}/target")
         version_number = get_version(war_file_path)
         artifactRepository.publish(folder,'corvallis-happenings.war',
@@ -47,7 +44,7 @@ class AwsDeployment(Deployment):
         target_directory = f"{self.root}/problem-3/corvallis-happenings"
         buildInfo = self.build(target_directory)
         artifactRepository = ArtifactRepository()
-        folder = 'elasticbeanstalk-helloworldbucket04224f88-akmbpvnn1hxb'
+        folder = 'dev-hello-world-war-bucke-devhelloworldbucket2aaee-wwaurlhxofux'
         
         artifactRepository.publish(folder,'corvallis-happenings.war',f"{target_directory}/target/corvallis-happenings-0.0.1-SNAPSHOT.war")
 
