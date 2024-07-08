@@ -6,7 +6,6 @@ class TestArtifactRepository:
     
     def image_file_loc(self):
         return './problem-3/pipeline/tests/image.png'
-    
 
     def key(self):
         return 'image.png'

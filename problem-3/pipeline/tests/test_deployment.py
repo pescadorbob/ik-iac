@@ -9,7 +9,6 @@ class TestDeployment(ABC):
     def deployment(self):
         pass
 
-
     def test_deployment(self):
         assert self.deployment().run_pipeline()
         

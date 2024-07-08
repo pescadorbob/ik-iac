@@ -14,10 +14,16 @@ class Deployment(ABC):
         self.target_directory = f"{self.root}/problem-3/corvallis-happenings"
 
     def run_pipeline(self):
-        self.build()
-        
-        self.deploy()
+        try: 
 
+            self.build()
+            
+            self.deploy()
+
+        except Exception as e:
+            print(f"Exception occurred: {e}")
+            raise Exception(f"Deployment failed {e}")
+        
         env = self.get_environment()
         return self.validate(env)
 

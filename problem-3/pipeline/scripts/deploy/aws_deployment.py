@@ -28,15 +28,13 @@ class AwsDeployment(Deployment):
         self.artifactRepository = self.config.get_artifact_repository()
 
     def deploy(self):
-
-
         
         war_file_path = get_war_file_path(f"{self.target_directory}/target")
         version_number = get_version(war_file_path)
         self.artifactRepository.publish('corvallis-happenings.war',
                                    f"{self.target_directory}/target/{war_file_path}")
 
-        deploy_to_eb(self.config,'corvallis-happenings.war','hello-worldEnvironment',self.config.app_name,version_number)
+        deploy_to_eb(self.config,'corvallis-happenings.war',self.config.environment_name,self.config.app_name,version_number)
 
     def get_environment(self):        
         env = Environment("aws", service_url=self.config.validation_url)

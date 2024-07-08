@@ -3,7 +3,6 @@ import subprocess
 
 class Command:
 
-
     def execute_with_dir(self, dir, command):
 
         self.save_start_dir()

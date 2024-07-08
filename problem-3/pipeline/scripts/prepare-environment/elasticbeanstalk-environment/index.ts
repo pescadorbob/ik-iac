@@ -32,8 +32,9 @@ export class CdkStack extends cdk.Stack {
       applicationName: appName
     });
 
+    environmentName = `${appName}-environment`;
     const env = new elasticbeanstalk.CfnEnvironment(this, 'Environment', {
-      environmentName: `${appName}-environment`,
+      environmentName: environmentName,
       applicationName: app.applicationName || appName,
       platformArn: platform,      
       optionSettings: [
@@ -47,6 +48,9 @@ export class CdkStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, 'environmentUrl', {
       value: env.attrEndpointUrl.toString(),
+    });
+    new cdk.CfnOutput(this, 'environmentName', {
+      value: environmentName,
     });
 
     // to ensure the instance profile is created before the environment.
