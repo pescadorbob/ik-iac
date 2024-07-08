@@ -313,7 +313,7 @@ import boto3
 s3 = boto3.client('s3')
 
 # Create a new S3 bucket
-bucket_name = 'dev-hello-world-war-bucke-devhelloworldbucket2aaee-wwaurlhxofux'
+bucket_name = <your bucket name here>
 print(f"WAR file uploading to S3 bucket: {bucket_name}")
 
 # Upload your WAR file to the bucket
@@ -362,7 +362,7 @@ def deploy_to_eb(bucket_name, object_key, environment_name, application_name):
         print(f"Error deploying: {str(e)}")
 
 if __name__ == "__main__":
-    bucket_name = 'dev-hello-world-war-bucke-devhelloworldbucket2aaee-wwaurlhxofux'
+    bucket_name = <your bucket name here>
     object_key = 'hello-world.war'
     environment_name = 'hello-worldEnvironment'
     application_name = 'hello-world'

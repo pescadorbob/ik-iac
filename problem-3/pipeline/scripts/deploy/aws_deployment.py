@@ -11,6 +11,7 @@ from abc import ABC, abstractmethod
 from .deployment import Deployment
 import os
 from .artifact_version import get_version
+from ..dev_config import DevConfig
 
 def get_war_file_path(directory):
     for root, dirs, files in os.walk(directory):
@@ -23,38 +24,37 @@ class AwsDeployment(Deployment):
 
     def __init__(self,root:str):
         super().__init__(root)
+        self.config = DevConfig()
+        self.artifactRepository = self.config.get_artifact_repository()
 
     def deploy(self):
-        artifactRepository = ArtifactRepository()
-        folder = 'dev-hello-world-war-bucke-devhelloworldbucket2aaee-wwaurlhxofux'
+
+
         
         war_file_path = get_war_file_path(f"{self.target_directory}/target")
         version_number = get_version(war_file_path)
-        artifactRepository.publish(folder,'corvallis-happenings.war',
+        self.artifactRepository.publish('corvallis-happenings.war',
                                    f"{self.target_directory}/target/{war_file_path}")
 
-        deploy_to_eb(folder,'corvallis-happenings.war','hello-worldEnvironment','hello-world',version_number)
+        deploy_to_eb(self.config,'corvallis-happenings.war','hello-worldEnvironment',self.config.app_name,version_number)
 
     def get_environment(self):        
-        validation_url = "http://hello-worldenvironment.eba-muraeydq.us-west-2.elasticbeanstalk.com/actuator/info"
-        env = Environment("aws", service_url=validation_url)
+        env = Environment("aws", service_url=self.config.validation_url)
         return env
     
     def dev_pipeline(self):
         target_directory = f"{self.root}/problem-3/corvallis-happenings"
         buildInfo = self.build(target_directory)
-        artifactRepository = ArtifactRepository()
-        folder = 'dev-hello-world-war-bucke-devhelloworldbucket2aaee-wwaurlhxofux'
         
-        artifactRepository.publish(folder,'corvallis-happenings.war',f"{target_directory}/target/corvallis-happenings-0.0.1-SNAPSHOT.war")
+        self.artifactRepository.publish('corvallis-happenings.war',f"{target_directory}/target/corvallis-happenings-0.0.1-SNAPSHOT.war")
 
-        deploy_to_eb(folder,'corvallis-happenings.war','hello-worldEnvironment','hello-world')
-        # http://hello-worldenvironment.eba-muraeydq.us-west-2.elasticbeanstalk.com/actuator/info
-        aws_env = Environment("aws",service_url="http://hello-worldenvironment.eba-muraeydq.us-west-2.elasticbeanstalk.com/actuator/info")
+        deploy_to_eb(self.config,'corvallis-happenings.war','hello-worldEnvironment','hello-world')
+        
+        aws_env = self.get_environment()
         print("validating deployment")
         config = DeploymentValidatorConfiguration.from_environment(aws_env)
         validator = DeploymentValidator(configuration=config)
-        isSuccessful = validator.validate(target_build_time_of_deployment=new_build_info, 
+        isSuccessful = validator.validate(target_build_time_of_deployment=buildInfo, 
                            time_limit=timedelta(minutes=3), 
                            retry_interval=timedelta(seconds=5))
         
