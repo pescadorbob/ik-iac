@@ -13,12 +13,6 @@ import os
 from .artifact_version import get_version
 from ..dev_config import DevConfig
 
-def get_war_file_path(directory):
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if file.endswith(".war"):
-                return file
-    return None
 
 class AwsDeployment(Deployment):
 
@@ -29,7 +23,7 @@ class AwsDeployment(Deployment):
 
     def deploy(self):
         
-        war_file_path = get_war_file_path(f"{self.target_directory}/target")
+        war_file_path = self.get_war_file_path(f"{self.target_directory}/target")
         version_number = get_version(war_file_path)
         self.artifactRepository.publish('corvallis-happenings.war',
                                    f"{self.target_directory}/target/{war_file_path}")
@@ -60,3 +54,8 @@ class AwsDeployment(Deployment):
 
         return isSuccessful
 
+if __name__ == "__main__":
+    cwd = os.getcwd()
+    print(cwd)
+    deployment = AwsDeployment("/Users/yourname/Code/Problem-3")
+    deployment.run_pipeline()

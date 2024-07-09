@@ -15,7 +15,7 @@ class TestDeployment(ABC):
         
 class TestLocalDeployment(TestDeployment):
     def deployment(self):
-        return LocalDeployment(".")
+        return LocalDeployment("./problem-3")
     
 class TestAwsDeployment(TestDeployment):
     def deployment(self):

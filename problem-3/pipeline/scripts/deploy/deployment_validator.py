@@ -27,13 +27,17 @@ class DeploymentValidator:
         start_time = self.clock.get_time()
         while not isValidated and elapsed_time < time_limit:
             build_time_of_deployment = self.deployment_info_gateway.get_info()
-             
-            print(f"build time of deployment: {build_time_of_deployment.time} target time of deployment: {target_build_time_of_deployment}")
-            isValidated = (build_time_of_deployment.time == target_build_time_of_deployment)
-            if isValidated:
-                return isValidated
+            if build_time_of_deployment.error is None:
+                 
+                print(f"build time of deployment: {build_time_of_deployment.time} target time of deployment: {target_build_time_of_deployment}")
+                isValidated = (build_time_of_deployment.time == target_build_time_of_deployment)
+                if isValidated:
+                    return isValidated
+            else:
+                print(f"error: {build_time_of_deployment.error}")
             self.clock.wait(retry_interval)
             elapsed_time = self.clock.get_time() - start_time
             print(f"elapsed time: {elapsed_time}")
+                
         return isValidated
         

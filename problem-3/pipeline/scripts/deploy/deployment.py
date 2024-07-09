@@ -7,11 +7,19 @@ from datetime import timedelta
 from .command import Command
 from abc import ABC, abstractmethod
 
+
 class Deployment(ABC):
+    def get_war_file_path(self,directory):
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if file.endswith(".war"):
+                    return file
+        return None
 
     def __init__(self,root:str):
-        self.root = root
-        self.target_directory = f"{self.root}/problem-3/corvallis-happenings"
+        os.chdir(root)
+        self.root = os.getcwd()
+        self.target_directory = f"{self.root}/corvallis-happenings"
 
     def run_pipeline(self):
         try: 
